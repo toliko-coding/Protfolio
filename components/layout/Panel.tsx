@@ -22,7 +22,7 @@ export function Panel({
         type="button"
         onClick={onToggle}
         aria-label={`Expand ${title}`}
-        className={`flex w-10 shrink-0 flex-col items-center gap-3 bg-foreground/[.03] py-3 hover:bg-accent/[.08] ${className}`}
+        className={`hidden w-10 shrink-0 flex-col items-center gap-3 bg-foreground/[.03] py-3 hover:bg-accent/[.08] sm:flex ${className}`}
       >
         <ExpandIcon className="h-4 w-4 text-accent/60" />
         <span className="[writing-mode:vertical-rl] rotate-180 font-mono text-xs tracking-wide text-foreground/60">
@@ -34,7 +34,7 @@ export function Panel({
 
   return (
     <section className={`flex min-w-0 flex-col overflow-hidden ${className}`}>
-      <div className="flex shrink-0 items-center justify-between px-3 py-2">
+      <div className="hidden shrink-0 items-center justify-between px-3 py-2 sm:flex">
         <span className="font-mono text-xs tracking-wide text-foreground/60">
           {title}
         </span>

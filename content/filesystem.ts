@@ -32,6 +32,6 @@ export const filesystem: FolderNode = {
   ]),
   intro: [
     "Software engineering & cybersecurity portfolio, built to explore like a computer rather than scroll like a webpage.",
-    "Click through the folders on the right, or use the terminal on the left — try ls, cd <folder>, or open <name>.",
+    "Click through the folders below, or switch to the Terminal — try ls, cd <folder>, or open <name>.",
   ],
 };

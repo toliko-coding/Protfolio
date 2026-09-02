@@ -260,7 +260,7 @@ export function Terminal() {
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-auto p-3">
         <p className="mb-3 text-accent/50">
           Welcome. Type <span className="text-accent/80">help</span> to get
-          started, or use the explorer on the right.
+          started, or use the Explorer.
         </p>
         {entries.map((entry) => (
           <div key={entry.id} className="mb-2">
