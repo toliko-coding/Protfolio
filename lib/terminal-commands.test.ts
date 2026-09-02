@@ -25,11 +25,11 @@ describe("ls / dir", () => {
     expect(runCommand("dir", "/").lines).toEqual(runCommand("ls", "/").lines);
   });
 
-  it("reports an empty folder", () => {
+  it("reports an empty folder with a maintenance notice", () => {
     const result = runCommand("ls", "/programming");
-    expect(result.lines).toEqual([
-      { text: "Nothing here yet.", tone: "muted" },
-    ]);
+    expect(result.lines[0].tone).toBe("error");
+    expect(result.lines[0].text).toMatch(/no content available/i);
+    expect(result.lines[1].text).toMatch(/check back soon/i);
   });
 
   it("resolves relative to the enclosing folder when the current path is a leaf", () => {

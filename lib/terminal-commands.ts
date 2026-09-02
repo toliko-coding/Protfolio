@@ -54,7 +54,18 @@ const lsCommand: Command = {
   run: ({ currentPath }) => {
     const folder = currentFolder(currentPath);
     if (folder.children.length === 0) {
-      return { lines: [{ text: "Nothing here yet.", tone: "muted" }] };
+      return {
+        lines: [
+          {
+            text: "503 UnmountedSectionError: no content available",
+            tone: "error",
+          },
+          {
+            text: "Some data in this section isn't wired up yet — check back soon.",
+            tone: "muted",
+          },
+        ],
+      };
     }
     return {
       lines: folder.children.map((child) => ({

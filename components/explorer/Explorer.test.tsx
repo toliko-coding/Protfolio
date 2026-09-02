@@ -92,9 +92,11 @@ describe("Explorer", () => {
     expect(screen.queryByRole("link", { name: "Back" })).not.toBeInTheDocument();
   });
 
-  it("shows an empty state for a folder with no children", () => {
+  it("shows a maintenance error state for a folder with no children", () => {
     render(<Explorer node={emptyFolder} />);
-    expect(screen.getByText(/nothing here yet/i)).toBeInTheDocument();
+    expect(screen.getByText("503")).toBeInTheDocument();
+    expect(screen.getByText(/no content available/i)).toBeInTheDocument();
+    expect(screen.getByText(/check back soon/i)).toBeInTheDocument();
   });
 
   it("renders the project detail view for a project node", () => {

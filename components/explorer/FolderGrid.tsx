@@ -10,8 +10,25 @@ interface FolderGridProps {
 export function FolderGrid({ nodes, intro }: FolderGridProps) {
   if (nodes.length === 0) {
     return (
-      <div className="flex h-full items-center justify-center p-8 text-center text-sm text-foreground/40">
-        Nothing here yet.
+      <div className="flex h-full items-center justify-center p-8">
+        <div className="flex max-w-sm flex-col gap-2 rounded-lg border border-red-400/30 bg-red-400/[.03] p-4 text-left font-mono text-xs">
+          <div className="flex items-center gap-2">
+            <span className="rounded border border-red-400/40 px-1.5 py-0.5 text-[10px] tracking-wide text-red-400/90 uppercase">
+              503
+            </span>
+            <span className="text-foreground/50">content/loader.ts</span>
+          </div>
+          <p className="text-red-400/90">
+            UnmountedSectionError: no content available
+          </p>
+          <p className="text-foreground/50">
+            at &lt;FolderGrid /&gt; — site under active development
+          </p>
+          <p className="pt-1 text-foreground/60">
+            Some data in this section isn&apos;t wired up yet — check back
+            soon.
+          </p>
+        </div>
       </div>
     );
   }
