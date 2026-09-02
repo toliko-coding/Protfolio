@@ -16,16 +16,22 @@ function folder(
 
 // The v1 tree from Phase 2. cybersecurity's subfolders, programming, and
 // useful-codes are intentionally still empty — no content provided for them yet.
-export const filesystem: FolderNode = folder("/", "", "portfolio", [
-  about,
-  folder("/projects", "projects", "Projects", projects),
-  folder("/cybersecurity", "cybersecurity", "CyberSecurity", [
-    folder("/cybersecurity/writeups", "writeups", "Write-ups"),
-    folder("/cybersecurity/toolkit", "toolkit", "Toolkit"),
+export const filesystem: FolderNode = {
+  ...folder("/", "", "portfolio", [
+    about,
+    folder("/projects", "projects", "Projects", projects),
+    folder("/cybersecurity", "cybersecurity", "CyberSecurity", [
+      folder("/cybersecurity/writeups", "writeups", "Write-ups"),
+      folder("/cybersecurity/toolkit", "toolkit", "Toolkit"),
+    ]),
+    folder("/programming", "programming", "Programming"),
+    folder("/useful-codes", "useful-codes", "Useful-Codes"),
+    skills,
+    resume,
+    contact,
   ]),
-  folder("/programming", "programming", "Programming"),
-  folder("/useful-codes", "useful-codes", "Useful-Codes"),
-  skills,
-  resume,
-  contact,
-]);
+  intro: [
+    "Software engineering & cybersecurity portfolio, built to explore like a computer rather than scroll like a webpage.",
+    "Click through the folders on the right, or use the terminal on the left — try ls, cd <folder>, or open <name>.",
+  ],
+};

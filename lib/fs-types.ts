@@ -11,6 +11,9 @@ interface BaseNode {
 export interface FolderNode extends BaseNode {
   type: "folder";
   children: FSNode[];
+  // Shown above the card grid when present — used for the root folder's
+  // short site description + terminal-usage hint, not needed on every folder.
+  intro?: string[];
 }
 
 export interface ProjectNode extends BaseNode {
@@ -37,6 +40,7 @@ export interface PageSection {
   heading?: string;
   paragraphs?: string[];
   items?: string[];
+  image?: { src: string; alt: string; width: number; height: number };
 }
 
 export interface PageNode extends BaseNode {

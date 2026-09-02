@@ -24,6 +24,7 @@ const folderWithChildren: FolderNode = {
   path: "/projects",
   type: "folder",
   children: [project],
+  intro: ["A short intro paragraph."],
 };
 
 const emptyFolder: FolderNode = {
@@ -46,6 +47,14 @@ const page: PageNode = {
   sections: [
     { paragraphs: ["A paragraph about me."] },
     { heading: "Skills", items: ["TypeScript", "Python"] },
+    {
+      image: {
+        src: "/about-dashboard.png",
+        alt: "Dashboard concept",
+        width: 200,
+        height: 150,
+      },
+    },
   ],
 };
 
@@ -55,6 +64,32 @@ describe("Explorer", () => {
     expect(screen.getByText("Demo Project")).toBeInTheDocument();
     expect(screen.getByText("~")).toBeInTheDocument();
     expect(screen.getByText("Projects")).toBeInTheDocument();
+  });
+
+  it("shows the folder's intro text above the card grid when provided", () => {
+    render(<Explorer node={folderWithChildren} />);
+    expect(screen.getByText("A short intro paragraph.")).toBeInTheDocument();
+  });
+
+  it("shows a Back link to the parent folder when not at root", () => {
+    render(<Explorer node={folderWithChildren} />);
+    expect(screen.getByRole("link", { name: "Back" })).toHaveAttribute(
+      "href",
+      "/",
+    );
+  });
+
+  it("has no interactive Back link at the root", () => {
+    const root: FolderNode = {
+      id: "root",
+      slug: "",
+      name: "portfolio",
+      path: "/",
+      type: "folder",
+      children: [project],
+    };
+    render(<Explorer node={root} />);
+    expect(screen.queryByRole("link", { name: "Back" })).not.toBeInTheDocument();
   });
 
   it("shows an empty state for a folder with no children", () => {
@@ -82,5 +117,8 @@ describe("Explorer", () => {
     expect(screen.getByText("Skills")).toBeInTheDocument();
     expect(screen.getByText("TypeScript")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Portrait" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Dashboard concept" }),
+    ).toBeInTheDocument();
   });
 });

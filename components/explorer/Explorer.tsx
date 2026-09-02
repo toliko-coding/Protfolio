@@ -12,7 +12,9 @@ export function Explorer({ node }: { node: FSNode }) {
     <div className="flex h-full min-h-0 flex-col">
       <Breadcrumb trail={trail} />
       <div className="min-h-0 flex-1 overflow-auto">
-        {isFolder(node) && <FolderGrid nodes={node.children} />}
+        {isFolder(node) && (
+          <FolderGrid nodes={node.children} intro={node.intro} />
+        )}
         {isProject(node) && <ProjectDetail project={node} />}
         {!isFolder(node) && !isProject(node) && <PageDetail page={node} />}
       </div>

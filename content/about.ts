@@ -22,5 +22,13 @@ export const about: PageNode = {
         "I'm currently completing a practical cybersecurity course at Ecom School, covering penetration testing, vulnerability assessment, and security analysis with tools like Kali Linux, Nmap, Metasploit, and Wireshark, alongside ongoing IDF reserve duty.",
       ],
     },
+    {
+      image: {
+        src: "/about-dashboard.png",
+        alt: "Kali-style portfolio dashboard concept",
+        width: 1536,
+        height: 1024,
+      },
+    },
   ],
 };

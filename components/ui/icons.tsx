@@ -47,6 +47,14 @@ export function ResumeIcon({ className }: IconProps) {
   );
 }
 
+export function BackIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M15 6 9 12l6 6" />
+    </svg>
+  );
+}
+
 export function ExpandIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className} aria-hidden="true">
