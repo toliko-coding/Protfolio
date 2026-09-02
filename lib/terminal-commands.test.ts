@@ -2,14 +2,14 @@ import { describe, expect, it } from "vitest";
 import { runCommand } from "./terminal-commands";
 
 describe("pwd", () => {
-  it("prints ~ at root", () => {
+  it("prints root at root", () => {
     const result = runCommand("pwd", "/");
-    expect(result.lines).toEqual([{ text: "~" }]);
+    expect(result.lines).toEqual([{ text: "root" }]);
   });
 
-  it("prints ~/path when nested", () => {
+  it("prints root/path when nested", () => {
     const result = runCommand("pwd", "/projects");
-    expect(result.lines).toEqual([{ text: "~/projects" }]);
+    expect(result.lines).toEqual([{ text: "root/projects" }]);
   });
 });
 
@@ -59,9 +59,10 @@ describe("cd", () => {
     );
   });
 
-  it("goes to root with ~, /, or no argument", () => {
+  it("goes to root with ~, /, root, or no argument", () => {
     expect(runCommand("cd ~", "/projects").navigateTo).toBe("/");
     expect(runCommand("cd /", "/projects").navigateTo).toBe("/");
+    expect(runCommand("cd root", "/projects").navigateTo).toBe("/");
     expect(runCommand("cd", "/projects").navigateTo).toBe("/");
   });
 

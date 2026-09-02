@@ -26,7 +26,7 @@ export function Breadcrumb({ trail }: { trail: FSNode[] }) {
       <div className="flex flex-wrap items-center gap-1">
         {trail.map((node, index) => {
           const isLast = index === trail.length - 1;
-          const label = node.path === "/" ? "~" : node.name;
+          const label = node.path === "/" ? "root" : node.name;
           return (
             <span key={node.id} className="flex items-center gap-1">
               {index > 0 && <span className="text-foreground/30">/</span>}

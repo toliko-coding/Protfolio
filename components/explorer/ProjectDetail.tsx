@@ -1,8 +1,14 @@
+import Image from "next/image";
 import type { ProjectNode } from "@/lib/fs-types";
+import { AndroidDownloadButton } from "./AndroidDownloadButton";
+import { TypewriterHeading } from "./TypewriterHeading";
 
 export function ProjectDetail({ project }: { project: ProjectNode }) {
   const hasLinks = Boolean(
-    project.links.github || project.links.demo || project.links.docs,
+    project.links.github ||
+      project.links.demo ||
+      project.links.docs ||
+      project.links.appStore,
   );
 
   return (
@@ -23,7 +29,11 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
         )}
       </div>
 
-      <h1 className="font-mono text-xl font-semibold">{project.name}</h1>
+      <TypewriterHeading
+        key={project.name}
+        text={project.name}
+        className="font-mono text-xl font-semibold"
+      />
       <p className="text-sm text-foreground/70">{project.summary}</p>
 
       <dl className="grid gap-3 text-sm sm:grid-cols-2">
@@ -49,7 +59,7 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
       </div>
 
       {hasLinks && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-start gap-2">
           {project.links.github && (
             <a
               href={project.links.github}
@@ -70,6 +80,7 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
               Live Demo
             </a>
           )}
+          {project.links.appStore && <AndroidDownloadButton />}
           {project.links.docs && (
             <a
               href={project.links.docs}
@@ -84,15 +95,15 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
       )}
 
       {project.media && project.media.length > 0 && (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="flex flex-col gap-3 pt-2">
           {project.media.map((item) => (
-            // Placeholder <img> handling — revisit with next/image once real screenshots exist.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               key={item.src}
               src={item.src}
               alt={item.alt}
-              className="rounded border border-foreground/10"
+              width={item.width}
+              height={item.height}
+              className="h-auto w-full rounded-lg border border-accent/30 shadow-[0_0_24px_-6px_var(--color-accent)]"
             />
           ))}
         </div>

@@ -14,7 +14,16 @@ const project: ProjectNode = {
   role: "Solo developer",
   problem: "Solved a demo problem.",
   techStack: ["TypeScript", "Next.js"],
-  links: { github: "https://github.com/example/demo" },
+  links: { github: "https://github.com/example/demo", appStore: true },
+  media: [
+    {
+      type: "image",
+      src: "/about-dashboard.png",
+      alt: "Demo overview",
+      width: 200,
+      height: 150,
+    },
+  ],
 };
 
 const folderWithChildren: FolderNode = {
@@ -62,7 +71,7 @@ describe("Explorer", () => {
   it("renders a folder as a card grid with a breadcrumb", () => {
     render(<Explorer node={folderWithChildren} />);
     expect(screen.getByText("Demo Project")).toBeInTheDocument();
-    expect(screen.getByText("~")).toBeInTheDocument();
+    expect(screen.getByText("root")).toBeInTheDocument();
     expect(screen.getByText("Projects")).toBeInTheDocument();
   });
 
@@ -110,6 +119,12 @@ describe("Explorer", () => {
       "href",
       "https://github.com/example/demo",
     );
+    expect(
+      screen.getByRole("button", { name: /get it on android/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Demo overview" }),
+    ).toBeInTheDocument();
   });
 
   it("renders the page detail view with paragraphs and headed item lists", () => {

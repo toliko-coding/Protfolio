@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { PageNode, PageSection } from "@/lib/fs-types";
+import { TypewriterHeading } from "./TypewriterHeading";
 
 function isTextSection(section: PageSection) {
   return Boolean(section.heading || section.paragraphs || section.items);
@@ -49,7 +50,11 @@ export function PageDetail({ page }: { page: PageNode }) {
       <div className="flex flex-col-reverse gap-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
         <div className="flex flex-col gap-5">
           <div>
-            <h1 className="font-mono text-xl font-semibold">{page.name}</h1>
+            <TypewriterHeading
+              key={page.name}
+              text={page.name}
+              className="font-mono text-xl font-semibold"
+            />
             {page.description && (
               <p className="text-sm text-foreground/60">{page.description}</p>
             )}

@@ -59,7 +59,7 @@ describe("Terminal", () => {
   it("shows a welcome message and the root prompt immediately", () => {
     render(<Terminal />);
     expect(screen.getByText(/welcome/i)).toBeInTheDocument();
-    expect(screen.getByLabelText("~ >")).toBeInTheDocument();
+    expect(screen.getByLabelText("root >")).toBeInTheDocument();
   });
 
   it("runs a command and echoes it with its output", () => {
@@ -72,9 +72,9 @@ describe("Terminal", () => {
   it("updates the prompt after cd and reflects it in pwd output", () => {
     renderBooted();
     runCommand("cd projects");
-    expect(screen.getByLabelText("~/projects >")).toBeInTheDocument();
+    expect(screen.getByLabelText("root/projects >")).toBeInTheDocument();
     runCommand("pwd");
-    expect(screen.getByText("~/projects")).toBeInTheDocument();
+    expect(screen.getByText("root/projects")).toBeInTheDocument();
   });
 
   it("clears prior output on `clear`", () => {

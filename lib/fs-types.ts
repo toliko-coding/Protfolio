@@ -28,11 +28,16 @@ export interface ProjectNode extends BaseNode {
     github?: string;
     demo?: string;
     docs?: string;
+    // Not a real store URL yet — presence just shows the download button,
+    // which explains it's not fully deployed rather than opening a dead link.
+    appStore?: boolean;
   };
   media?: {
     type: "image" | "screenshot";
     src: string;
     alt: string;
+    width: number;
+    height: number;
   }[];
 }
 

@@ -13,11 +13,28 @@ export const projects: ProjectNode[] = [
     role: "Developer — B.Sc. final year project",
     problem:
       "SMS-based phishing is a common mobile security threat. SMSNet detects suspicious messages on-device and helps users recognize phishing attempts before they act on them.",
-    techStack: ["React Native", "TypeScript", "Android", "Axios"],
+    techStack: [
+      "React Native (Expo)",
+      "TypeScript",
+      "Firebase",
+      "VirusTotal API",
+      "TensorFlow.js",
+      "Android SMS Listener",
+    ],
     links: {
       github: "https://github.com/toliko-coding/SMSNet0.1",
       demo: "https://www.youtube.com/watch?v=kLN8q_Sf7bY",
+      appStore: true,
     },
+    media: [
+      {
+        type: "image",
+        src: "/smsnet-overview.png",
+        alt: "SMSNet architecture and feature overview",
+        width: 1536,
+        height: 1024,
+      },
+    ],
   },
   {
     id: "walletradar",

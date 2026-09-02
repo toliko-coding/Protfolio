@@ -60,10 +60,10 @@ export function getParentPath(path: string): string {
   return lastSlash <= 0 ? "/" : normalized.slice(0, lastSlash);
 }
 
-// Root displays as "~", matching the breadcrumb and terminal prompt convention.
+// Root displays as "root", matching the breadcrumb and terminal prompt convention.
 export function toDisplayPath(path: string): string {
   const normalized = normalizePath(path);
-  return normalized === "/" ? "~" : `~${normalized}`;
+  return normalized === "/" ? "root" : `root${normalized}`;
 }
 
 // Resolves a typed name against a child's slug (URL-facing) or display name

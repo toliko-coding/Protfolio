@@ -81,7 +81,7 @@ const cdCommand: Command = {
   run: ({ currentPath, args }) => {
     const target = args[0];
 
-    if (!target || target === "~" || target === "/") {
+    if (!target || target === "~" || target === "/" || target === "root") {
       return { lines: [], navigateTo: "/" };
     }
 
