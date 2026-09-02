@@ -33,10 +33,17 @@ export interface ProjectNode extends BaseNode {
   }[];
 }
 
+export interface PageSection {
+  heading?: string;
+  paragraphs?: string[];
+  items?: string[];
+}
+
 export interface PageNode extends BaseNode {
   type: "page";
-  // Plain placeholder text for now — becomes MDX-authored content in Phase 10.
-  body: string;
+  // Structured sections cover About/Skills/Resume/Contact today. Long-form
+  // prose (e.g. CyberSecurity write-ups) will move to MDX once that content exists.
+  sections: PageSection[];
 }
 
 export type FSNode = FolderNode | ProjectNode | PageNode;

@@ -42,7 +42,10 @@ const page: PageNode = {
   path: "/about",
   type: "page",
   description: "Who I am.",
-  body: "Placeholder body text.",
+  sections: [
+    { paragraphs: ["A paragraph about me."] },
+    { heading: "Skills", items: ["TypeScript", "Python"] },
+  ],
 };
 
 describe("Explorer", () => {
@@ -71,9 +74,11 @@ describe("Explorer", () => {
     );
   });
 
-  it("renders the page detail view for a page node", () => {
+  it("renders the page detail view with paragraphs and headed item lists", () => {
     render(<Explorer node={page} />);
     expect(screen.getByRole("heading", { name: "About" })).toBeInTheDocument();
-    expect(screen.getByText("Placeholder body text.")).toBeInTheDocument();
+    expect(screen.getByText("A paragraph about me.")).toBeInTheDocument();
+    expect(screen.getByText("Skills")).toBeInTheDocument();
+    expect(screen.getByText("TypeScript")).toBeInTheDocument();
   });
 });

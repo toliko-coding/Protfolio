@@ -1,17 +1,9 @@
-import type { FolderNode, PageNode } from "@/lib/fs-types";
+import type { FolderNode } from "@/lib/fs-types";
 import { projects } from "./projects";
-
-function page(slug: string, name: string, description: string): PageNode {
-  return {
-    id: slug,
-    slug,
-    name,
-    path: `/${slug}`,
-    type: "page",
-    description,
-    body: "Placeholder content — written in Phase 10.",
-  };
-}
+import { about } from "./about";
+import { skills } from "./skills";
+import { resume } from "./resume";
+import { contact } from "./contact";
 
 function folder(
   path: string,
@@ -22,10 +14,10 @@ function folder(
   return { id: slug || "root", slug, name, path, type: "folder", children };
 }
 
-// The v1 tree from Phase 2. Placeholder folders (cybersecurity subfolders,
-// programming, useful-codes) are intentionally empty until Phase 10 content.
+// The v1 tree from Phase 2. cybersecurity's subfolders, programming, and
+// useful-codes are intentionally still empty — no content provided for them yet.
 export const filesystem: FolderNode = folder("/", "", "portfolio", [
-  page("about", "About", "Who I am."),
+  about,
   folder("/projects", "projects", "Projects", projects),
   folder("/cybersecurity", "cybersecurity", "CyberSecurity", [
     folder("/cybersecurity/writeups", "writeups", "Write-ups"),
@@ -33,7 +25,7 @@ export const filesystem: FolderNode = folder("/", "", "portfolio", [
   ]),
   folder("/programming", "programming", "Programming"),
   folder("/useful-codes", "useful-codes", "Useful-Codes"),
-  page("skills", "Skills", "What I work with."),
-  page("resume", "Resume", "On-site resume."),
-  page("contact", "Contact", "Get in touch."),
+  skills,
+  resume,
+  contact,
 ]);

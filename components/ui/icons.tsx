@@ -19,6 +19,15 @@ export function GithubIcon({ className }: IconProps) {
   );
 }
 
+export function LinkedinIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <path d="M7 10v7M7 7v.01M11 17v-4.5a2.5 2.5 0 0 1 5 0V17M11 12.5V17" />
+    </svg>
+  );
+}
+
 export function MailIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className} aria-hidden="true">

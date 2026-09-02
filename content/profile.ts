@@ -3,14 +3,15 @@ export interface SiteProfile {
   tagline: string;
   email: string;
   githubUrl: string;
+  linkedinUrl: string;
   resumeHref: string;
 }
 
-// Placeholder values — real content lands in Phase 10.
 export const siteProfile: SiteProfile = {
-  name: "Your Name",
+  name: "Anatoli Kot",
   tagline: "Software Engineer · Cybersecurity",
-  email: "you@example.com",
-  githubUrl: "https://github.com/your-username",
+  email: "Toli757@gmail.com",
+  githubUrl: "https://github.com/toliko-coding",
+  linkedinUrl: "https://www.linkedin.com/in/tolik-kot-10819b21b/",
   resumeHref: "/resume.pdf",
 };

@@ -1,5 +1,10 @@
 import { siteProfile } from "@/content/profile";
-import { GithubIcon, MailIcon, ResumeIcon } from "@/components/ui/icons";
+import {
+  GithubIcon,
+  LinkedinIcon,
+  MailIcon,
+  ResumeIcon,
+} from "@/components/ui/icons";
 
 export function Header() {
   return (
@@ -29,6 +34,15 @@ export function Header() {
         >
           <GithubIcon className="h-4 w-4" />
           <span className="hidden sm:inline">GitHub</span>
+        </a>
+        <a
+          href={siteProfile.linkedinUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 rounded px-2 py-1.5 hover:bg-foreground/5"
+        >
+          <LinkedinIcon className="h-4 w-4" />
+          <span className="hidden sm:inline">LinkedIn</span>
         </a>
         <a
           href={`mailto:${siteProfile.email}`}
