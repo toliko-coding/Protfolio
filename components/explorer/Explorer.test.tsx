@@ -42,6 +42,7 @@ const page: PageNode = {
   path: "/about",
   type: "page",
   description: "Who I am.",
+  image: { src: "/portrait.jpg", alt: "Portrait", width: 100, height: 100 },
   sections: [
     { paragraphs: ["A paragraph about me."] },
     { heading: "Skills", items: ["TypeScript", "Python"] },
@@ -80,5 +81,6 @@ describe("Explorer", () => {
     expect(screen.getByText("A paragraph about me.")).toBeInTheDocument();
     expect(screen.getByText("Skills")).toBeInTheDocument();
     expect(screen.getByText("TypeScript")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Portrait" })).toBeInTheDocument();
   });
 });

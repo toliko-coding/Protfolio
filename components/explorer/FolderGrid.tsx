@@ -17,12 +17,12 @@ export function FolderGrid({ nodes }: { nodes: FSNode[] }) {
         <Link
           key={node.id}
           href={node.path}
-          className="flex flex-col gap-1 rounded-lg border border-foreground/10 p-3 transition-colors hover:border-foreground/30 hover:bg-foreground/[.03]"
+          className="flex flex-col gap-1 rounded-lg border border-foreground/10 p-3 transition-colors hover:border-accent/50 hover:bg-accent/[.04]"
         >
-          <span className="font-mono text-xs text-foreground/40">
+          <span className="font-mono text-xs text-accent/50">
             {isFolder(node) ? "dir" : node.type}
           </span>
-          <span className="text-sm font-medium">{node.name}</span>
+          <span className="font-mono text-sm font-medium">{node.name}</span>
           {isProject(node) && (
             <span className="line-clamp-2 text-xs text-foreground/60">
               {node.summary}

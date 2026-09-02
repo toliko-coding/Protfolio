@@ -19,10 +19,10 @@ interface HistoryEntry {
 }
 
 const toneClassName: Record<NonNullable<OutputLine["tone"]>, string> = {
-  default: "text-foreground/80",
-  error: "text-red-500",
-  muted: "text-foreground/40",
-  heading: "font-semibold text-foreground",
+  default: "text-accent/80",
+  error: "text-red-400",
+  muted: "text-accent/40",
+  heading: "font-semibold text-accent text-glow",
 };
 
 let nextEntryId = 0;
@@ -90,32 +90,32 @@ export function Terminal() {
 
   return (
     <div
-      className="flex h-full min-h-0 flex-col font-mono text-sm"
+      className="flex h-full min-h-0 flex-col bg-terminal-surface font-mono text-sm"
       onClick={() => inputRef.current?.focus()}
     >
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-auto p-3">
-        <p className="mb-3 text-foreground/50">
-          Welcome. Type <span className="text-foreground/80">help</span> to
-          get started, or use the explorer on the right.
+        <p className="mb-3 text-accent/50">
+          Welcome. Type <span className="text-accent/80">help</span> to get
+          started, or use the explorer on the right.
         </p>
         {entries.map((entry) => (
           <div key={entry.id} className="mb-2">
             <div className="flex gap-2">
-              <span className="text-foreground/50">{entry.prompt}</span>
-              <span>{entry.input}</span>
+              <span className="text-accent/50">{entry.prompt}</span>
+              <span className="text-accent/90">{entry.input}</span>
             </div>
             {entry.lines.map((line, index) => (
-              <p
-                key={index}
-                className={toneClassName[line.tone ?? "default"]}
-              >
-                {line.text || " "}
+              <p key={index} className={toneClassName[line.tone ?? "default"]}>
+                {line.text || " "}
               </p>
             ))}
           </div>
         ))}
         <form onSubmit={handleSubmit} className="flex gap-2">
-          <label htmlFor="terminal-input" className="text-foreground/50">
+          <label
+            htmlFor="terminal-input"
+            className="text-glow text-accent/70"
+          >
             {toDisplayPath(path)} &gt;
           </label>
           <input
@@ -124,7 +124,7 @@ export function Terminal() {
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
             onKeyDown={handleKeyDown}
-            className="flex-1 bg-transparent outline-none"
+            className="flex-1 bg-transparent text-accent caret-accent outline-none"
             autoComplete="off"
             autoCapitalize="off"
             spellCheck={false}

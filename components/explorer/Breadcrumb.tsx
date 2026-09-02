@@ -18,7 +18,7 @@ export function Breadcrumb({ trail }: { trail: FSNode[] }) {
             ) : (
               <Link
                 href={node.path}
-                className="hover:text-foreground hover:underline"
+                className="hover:text-accent hover:underline"
               >
                 {label}
               </Link>

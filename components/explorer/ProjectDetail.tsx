@@ -11,7 +11,7 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
         {project.tags.map((tag) => (
           <span
             key={tag}
-            className="rounded-full border border-foreground/15 px-2 py-0.5 font-mono text-[11px] tracking-wide text-foreground/60 uppercase"
+            className="rounded-full border border-accent/40 px-2 py-0.5 font-mono text-[11px] tracking-wide text-accent/80 uppercase"
           >
             {tag}
           </span>
@@ -23,16 +23,16 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
         )}
       </div>
 
-      <h1 className="text-xl font-semibold">{project.name}</h1>
+      <h1 className="font-mono text-xl font-semibold">{project.name}</h1>
       <p className="text-sm text-foreground/70">{project.summary}</p>
 
       <dl className="grid gap-3 text-sm sm:grid-cols-2">
         <div>
-          <dt className="font-mono text-xs text-foreground/40">Role</dt>
+          <dt className="font-mono text-xs text-accent/60">Role</dt>
           <dd>{project.role}</dd>
         </div>
         <div>
-          <dt className="font-mono text-xs text-foreground/40">Problem</dt>
+          <dt className="font-mono text-xs text-accent/60">Problem</dt>
           <dd>{project.problem}</dd>
         </div>
       </dl>
@@ -55,7 +55,7 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
               href={project.links.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded border border-foreground/15 px-3 py-1.5 text-sm hover:bg-foreground/5"
+              className="rounded border border-accent/30 px-3 py-1.5 text-sm hover:border-accent/70 hover:bg-accent/10"
             >
               GitHub
             </a>
@@ -65,7 +65,7 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
               href={project.links.demo}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded border border-foreground/15 px-3 py-1.5 text-sm hover:bg-foreground/5"
+              className="rounded border border-accent/30 px-3 py-1.5 text-sm hover:border-accent/70 hover:bg-accent/10"
             >
               Live Demo
             </a>
@@ -75,7 +75,7 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
               href={project.links.docs}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded border border-foreground/15 px-3 py-1.5 text-sm hover:bg-foreground/5"
+              className="rounded border border-accent/30 px-3 py-1.5 text-sm hover:border-accent/70 hover:bg-accent/10"
             >
               Docs
             </a>
@@ -86,7 +86,7 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
       {project.media && project.media.length > 0 && (
         <div className="grid grid-cols-2 gap-2">
           {project.media.map((item) => (
-            // Placeholder <img> handling — revisit with next/image once real screenshots exist (Phase 10/11).
+            // Placeholder <img> handling — revisit with next/image once real screenshots exist.
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={item.src}

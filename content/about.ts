@@ -7,6 +7,12 @@ export const about: PageNode = {
   path: "/about",
   type: "page",
   description: "Who I am.",
+  image: {
+    src: "/portrait.jpg",
+    alt: "Portrait of Anatoli Kot",
+    width: 1086,
+    height: 1448,
+  },
   sections: [
     {
       paragraphs: [

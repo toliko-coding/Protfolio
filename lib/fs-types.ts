@@ -44,6 +44,7 @@ export interface PageNode extends BaseNode {
   // Structured sections cover About/Skills/Resume/Contact today. Long-form
   // prose (e.g. CyberSecurity write-ups) will move to MDX once that content exists.
   sections: PageSection[];
+  image?: { src: string; alt: string; width: number; height: number };
 }
 
 export type FSNode = FolderNode | ProjectNode | PageNode;

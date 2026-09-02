@@ -5,6 +5,7 @@ export interface SiteProfile {
   githubUrl: string;
   linkedinUrl: string;
   resumeHref: string;
+  avatarSrc: string;
 }
 
 export const siteProfile: SiteProfile = {
@@ -14,4 +15,5 @@ export const siteProfile: SiteProfile = {
   githubUrl: "https://github.com/toliko-coding",
   linkedinUrl: "https://www.linkedin.com/in/tolik-kot-10819b21b/",
   resumeHref: "/resume.pdf",
+  avatarSrc: "/portrait.jpg",
 };

@@ -22,9 +22,9 @@ export function Panel({
         type="button"
         onClick={onToggle}
         aria-label={`Expand ${title}`}
-        className={`flex w-10 shrink-0 flex-col items-center gap-3 bg-foreground/[.03] py-3 hover:bg-foreground/[.06] ${className}`}
+        className={`flex w-10 shrink-0 flex-col items-center gap-3 bg-foreground/[.03] py-3 hover:bg-accent/[.08] ${className}`}
       >
-        <ExpandIcon className="h-4 w-4 text-foreground/50" />
+        <ExpandIcon className="h-4 w-4 text-accent/60" />
         <span className="[writing-mode:vertical-rl] rotate-180 font-mono text-xs tracking-wide text-foreground/60">
           {title}
         </span>
@@ -42,7 +42,7 @@ export function Panel({
           type="button"
           onClick={onToggle}
           aria-label={`Collapse ${title}`}
-          className="rounded p-1 text-foreground/40 hover:bg-foreground/[.06] hover:text-foreground/80"
+          className="rounded p-1 text-foreground/40 hover:bg-accent/[.08] hover:text-accent"
         >
           <CollapseIcon className="h-4 w-4" />
         </button>
