@@ -21,7 +21,7 @@ interface HistoryEntry {
 const toneClassName: Record<NonNullable<OutputLine["tone"]>, string> = {
   default: "text-accent/80",
   error: "text-red-400",
-  muted: "text-accent/40",
+  muted: "text-accent/60",
   heading: "font-semibold text-accent text-glow",
 };
 
@@ -258,14 +258,14 @@ export function Terminal() {
       }}
     >
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-auto p-3">
-        <p className="mb-3 text-accent/50">
+        <p className="mb-3 text-accent/60">
           Welcome. Type <span className="text-accent/80">help</span> to get
           started, or use the Explorer.
         </p>
         {entries.map((entry) => (
           <div key={entry.id} className="mb-2">
             <div className="flex gap-2">
-              <span className="text-accent/50">{entry.prompt}</span>
+              <span className="text-accent/60">{entry.prompt}</span>
               <span className="text-accent/90">{entry.input}</span>
             </div>
             {entry.lines.map((line, index) => (
@@ -292,7 +292,7 @@ export function Terminal() {
             onKeyDown={handleKeyDown}
             readOnly={isBooting}
             placeholder={placeholder}
-            className="flex-1 bg-transparent text-accent caret-accent outline-none placeholder:text-accent/30"
+            className="flex-1 bg-transparent text-accent caret-accent placeholder:text-accent/30"
             autoComplete="off"
             autoCapitalize="off"
             spellCheck={false}

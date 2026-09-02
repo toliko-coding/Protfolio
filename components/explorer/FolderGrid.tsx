@@ -16,12 +16,12 @@ export function FolderGrid({ nodes, intro }: FolderGridProps) {
             <span className="rounded border border-red-400/40 px-1.5 py-0.5 text-[10px] tracking-wide text-red-400/90 uppercase">
               503
             </span>
-            <span className="text-foreground/50">content/loader.ts</span>
+            <span className="text-foreground/60">content/loader.ts</span>
           </div>
           <p className="text-red-400/90">
             UnmountedSectionError: no content available
           </p>
-          <p className="text-foreground/50">
+          <p className="text-foreground/60">
             at &lt;FolderGrid /&gt; — site under active development
           </p>
           <p className="pt-1 text-foreground/60">
@@ -49,7 +49,7 @@ export function FolderGrid({ nodes, intro }: FolderGridProps) {
             href={node.path}
             className="flex flex-col gap-1 rounded-lg border border-foreground/10 p-3 transition-colors hover:border-accent/50 hover:bg-accent/[.04]"
           >
-            <span className="font-mono text-xs text-accent/50">
+            <span className="font-mono text-xs text-accent/60">
               {isFolder(node) ? "dir" : node.type}
             </span>
             <span className="font-mono text-sm font-medium">{node.name}</span>

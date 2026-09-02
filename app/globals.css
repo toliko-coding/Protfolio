@@ -41,3 +41,14 @@ body {
 .animate-blink {
   animation: blink 1s step-end infinite;
 }
+
+/* Explicit rule rather than Tailwind's outline-none + focus-visible:outline —
+   the two utilities conflicted on outline-style ordering in Tailwind v4. */
+#terminal-input {
+  outline: none;
+}
+
+#terminal-input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

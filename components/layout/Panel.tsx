@@ -33,7 +33,10 @@ export function Panel({
   }
 
   return (
-    <section className={`flex min-w-0 flex-col overflow-hidden ${className}`}>
+    <section
+      aria-label={title}
+      className={`flex min-w-0 flex-col overflow-hidden ${className}`}
+    >
       <div className="hidden shrink-0 items-center justify-between px-3 py-2 sm:flex">
         <span className="font-mono text-xs tracking-wide text-foreground/60">
           {title}

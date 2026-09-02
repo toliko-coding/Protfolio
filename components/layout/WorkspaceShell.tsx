@@ -42,7 +42,7 @@ export function WorkspaceShell({ terminal, explorer }: WorkspaceShellProps) {
           className={`flex-1 border-b-2 px-3 py-2 font-mono text-xs tracking-wide uppercase ${
             mobileTab === "explorer"
               ? "border-accent text-accent"
-              : "border-transparent text-foreground/50"
+              : "border-transparent text-foreground/60"
           }`}
         >
           Explorer
@@ -54,7 +54,7 @@ export function WorkspaceShell({ terminal, explorer }: WorkspaceShellProps) {
           className={`flex-1 border-b-2 px-3 py-2 font-mono text-xs tracking-wide uppercase ${
             mobileTab === "terminal"
               ? "border-accent text-accent"
-              : "border-transparent text-foreground/50"
+              : "border-transparent text-foreground/60"
           }`}
         >
           Terminal

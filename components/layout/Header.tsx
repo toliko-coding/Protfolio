@@ -17,7 +17,6 @@ export function Header() {
           width={64}
           height={64}
           className="h-9 w-9 shrink-0 rounded-full border border-accent/40 object-cover"
-          priority
         />
         <div className="min-w-0">
           <p className="truncate font-mono text-sm font-medium">

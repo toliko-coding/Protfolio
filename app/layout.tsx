@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { WorkspaceShell } from "@/components/layout/WorkspaceShell";
 import { Terminal } from "@/components/terminal/Terminal";
+import { siteProfile } from "@/content/profile";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,9 +17,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio",
-  description:
-    "Software engineering & cybersecurity portfolio — explore it like a computer.",
+  title: {
+    default: `${siteProfile.name} — ${siteProfile.tagline}`,
+    template: `%s — ${siteProfile.name}`,
+  },
+  description: siteProfile.tagline,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -29,7 +32,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex h-dvh flex-col overflow-hidden">
         <Header />
-        <WorkspaceShell terminal={<Terminal />} explorer={children} />
+        <WorkspaceShell
+          terminal={<Terminal />}
+          explorer={<main className="contents">{children}</main>}
+        />
       </body>
     </html>
   );
