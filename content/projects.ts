@@ -60,4 +60,74 @@ export const projects: ProjectNode[] = [
       github: "https://github.com/toliko-coding/WalletRadar_web",
     },
   },
+  {
+    id: "docapp",
+    slug: "docapp",
+    name: "DocApp",
+    path: "/projects/docapp",
+    type: "project",
+    tags: ["software"],
+    summary:
+      "Mobile app (iOS + Android) that centralizes household bills and receipts — scan a document, let AI extract the details, review, and track from one dashboard. In active development.",
+    role: "Developer",
+    problem:
+      "Replaces scattered paper bills and receipts with a single organized, searchable digital system, using a provider-agnostic OCR/AI interface so no vendor is hardcoded.",
+    techStack: ["React Native (Expo)", "TypeScript", "Supabase", "Zod", "Expo Router"],
+    links: {
+      github: "https://github.com/toliko-coding/My-docApp",
+    },
+  },
+  {
+    id: "medical-diagnosis-app",
+    slug: "medical-diagnosis-app",
+    name: "Medical Diagnosis App",
+    path: "/projects/medical-diagnosis-app",
+    type: "project",
+    tags: ["software"],
+    summary:
+      "Android app where a doctor enters a patient's blood test results and the app determines the likely disease and recommended treatment.",
+    role: "Developer",
+    problem:
+      "Speeds up first-pass diagnosis by mapping blood test values to likely conditions and treatment suggestions for the reviewing doctor.",
+    techStack: ["Java", "Android SDK"],
+    links: {
+      github: "https://github.com/toliko-coding/Android-App",
+    },
+  },
+  {
+    id: "coffeeshop-mvc",
+    slug: "coffeeshop-mvc",
+    name: "CoffeeShop MVC",
+    path: "/projects/coffeeshop-mvc",
+    type: "project",
+    tags: ["software"],
+    summary:
+      ".NET MVC web application for coffee shops to manage their menu, users, and customer orders.",
+    role: "Developer",
+    problem:
+      "Gives a coffee shop a simple web-based back office: menu management, user accounts, and order placement/tracking.",
+    techStack: [".NET", "ASP.NET MVC", "JavaScript"],
+    links: {
+      github:
+        "https://github.com/toliko-coding/.NET---MVC---CoffeShop-WebApplication-Project",
+    },
+  },
+  {
+    id: "wepo4u",
+    slug: "wepo4u",
+    name: "Wepo4U",
+    path: "/projects/wepo4u",
+    type: "project",
+    tags: ["software"],
+    summary:
+      "First website project — a NoSQL/Firebase-backed site built during COVID-19 to connect elderly residents needing help with local volunteers and small businesses.",
+    role: "Developer — school project",
+    problem:
+      "Connects vulnerable residents who needed help during COVID-19 lockdowns with nearby volunteers and small businesses offering support.",
+    techStack: ["Firebase", "HTML", "JavaScript"],
+    links: {
+      github:
+        "https://github.com/toliko-coding/NoSQL-FireBase----site-Wepo4U-project",
+    },
+  },
 ];

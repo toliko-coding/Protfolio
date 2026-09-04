@@ -1,10 +1,17 @@
 import Link from "next/link";
 import type { FSNode } from "@/lib/fs-types";
 import { isFolder, isProject } from "@/lib/fs-types";
+import { CodeIcon, FileIcon, FolderIcon } from "@/components/ui/icons";
 
 interface FolderGridProps {
   nodes: FSNode[];
   intro?: string[];
+}
+
+function NodeIcon({ node, className }: { node: FSNode; className?: string }) {
+  if (isFolder(node)) return <FolderIcon className={className} />;
+  if (isProject(node)) return <CodeIcon className={className} />;
+  return <FileIcon className={className} />;
 }
 
 export function FolderGrid({ nodes, intro }: FolderGridProps) {
@@ -47,18 +54,38 @@ export function FolderGrid({ nodes, intro }: FolderGridProps) {
           <Link
             key={node.id}
             href={node.path}
-            className="flex flex-col gap-1 rounded-lg border border-foreground/10 p-3 transition-colors hover:border-accent/50 hover:bg-accent/[.04]"
+            className="group flex flex-col gap-2 rounded-lg border border-foreground/10 p-3 transition-colors hover:border-accent/50 hover:bg-accent/[.04] hover:shadow-[0_0_16px_-8px_var(--color-accent)]"
           >
-            <span className="font-mono text-xs text-accent/60">
-              {isFolder(node) ? "dir" : node.type}
+            <div className="flex items-center gap-2">
+              <NodeIcon
+                node={node}
+                className="h-4 w-4 shrink-0 text-accent/50 transition-colors group-hover:text-accent"
+              />
+              <span className="font-mono text-[10px] tracking-wide text-foreground/40 uppercase">
+                {isFolder(node) ? "dir" : node.type}
+              </span>
+            </div>
+            <span className="truncate font-mono text-sm font-medium">
+              {node.name}
             </span>
-            <span className="font-mono text-sm font-medium">{node.name}</span>
+            {isProject(node) && (
+              <div className="flex flex-wrap gap-1">
+                {node.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-accent/30 px-1.5 py-0.5 font-mono text-[9px] tracking-wide text-accent/70 uppercase"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
             {isProject(node) && (
               <span className="line-clamp-2 text-xs text-foreground/60">
                 {node.summary}
               </span>
             )}
-            {!isFolder(node) && !isProject(node) && node.description && (
+            {!isProject(node) && node.description && (
               <span className="line-clamp-2 text-xs text-foreground/60">
                 {node.description}
               </span>

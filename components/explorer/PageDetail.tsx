@@ -1,6 +1,17 @@
 import Image from "next/image";
+import type { ComponentType } from "react";
 import type { PageNode, PageSection } from "@/lib/fs-types";
 import { TypewriterHeading } from "./TypewriterHeading";
+import { GraduationCapIcon, LocationIcon, ShieldIcon } from "@/components/ui/icons";
+
+const factIcons: Record<
+  NonNullable<PageNode["facts"]>[number]["icon"],
+  ComponentType<{ className?: string }>
+> = {
+  location: LocationIcon,
+  education: GraduationCapIcon,
+  service: ShieldIcon,
+};
 
 function isTextSection(section: PageSection) {
   return Boolean(section.heading || section.paragraphs || section.items);
@@ -59,6 +70,23 @@ export function PageDetail({ page }: { page: PageNode }) {
               <p className="text-sm text-foreground/60">{page.description}</p>
             )}
           </div>
+
+          {page.facts && page.facts.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {page.facts.map((fact) => {
+                const Icon = factIcons[fact.icon];
+                return (
+                  <span
+                    key={fact.label}
+                    className="flex items-center gap-1.5 rounded-full border border-accent/25 bg-accent/[.05] px-2.5 py-1 font-mono text-xs text-foreground/75"
+                  >
+                    <Icon className="h-3.5 w-3.5 text-accent/70" />
+                    {fact.label}
+                  </span>
+                );
+              })}
+            </div>
+          )}
 
           {textSections.map((section, index) => (
             <SectionBlock key={index} section={section} />

@@ -12,11 +12,6 @@ export const contact: PageNode = {
       paragraphs: [
         "I'm open to software engineering and cybersecurity opportunities — feel free to reach out.",
       ],
-      items: [
-        "Email: Toli757@gmail.com",
-        "GitHub: github.com/toliko-coding",
-        "LinkedIn: linkedin.com/in/tolik-kot-10819b21b",
-      ],
     },
   ],
 };

@@ -54,6 +54,10 @@ export interface PageNode extends BaseNode {
   // prose (e.g. CyberSecurity write-ups) will move to MDX once that content exists.
   sections: PageSection[];
   image?: { src: string; alt: string; width: number; height: number };
+  // Optional quick-fact chips shown under the heading (About uses this today).
+  // The icon key is resolved to a component in the renderer, keeping content
+  // files free of UI imports.
+  facts?: { icon: "location" | "education" | "service"; label: string }[];
 }
 
 export type FSNode = FolderNode | ProjectNode | PageNode;

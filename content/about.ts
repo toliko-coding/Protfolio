@@ -13,6 +13,11 @@ export const about: PageNode = {
     width: 1086,
     height: 1448,
   },
+  facts: [
+    { icon: "location", label: "Beer Sheva, Israel" },
+    { icon: "education", label: "B.Sc. Software Engineering — Cybersecurity" },
+    { icon: "service", label: "IDF Reserve Duty (2025–Present)" },
+  ],
   sections: [
     {
       paragraphs: [
