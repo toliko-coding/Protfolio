@@ -6,8 +6,24 @@ import { ChevronIcon, RefreshIcon } from "@/components/ui/icons";
 // How far above its own bottom-12 offset this widget's box actually
 // reaches, published as a CSS var so other fixed-height gutters (Explorer,
 // the Terminal column) can reserve exactly that much space instead of a
-// guessed pixel value that drifts whenever this widget's content does
-// (open/closed, row count, text wrapping at a different viewport width).
+// guessed pixel value that drifts whenever this widget's content does.
+//
+// Measured from a hidden clone of the PILL ONLY — never the expanded
+// breakdown box (see the measuring clone below). Two things were tried and
+// reverted before this:
+//   1. Measuring the visible widget directly: the reserved gutter grew and
+//      shrank live as the visitor opened/closed it, moving the scroll
+//      boundary out from under whatever they were looking at.
+//   2. Always reserving the worst case (expanded) size, even while
+//      collapsed: no more shift, but now every page permanently loses
+//      ~226px of content height for a box that's hidden 99% of the time,
+//      which made clipping worse in the (default, most common) collapsed
+//      state — reported as "still covering the page even when minimized."
+// Reserving only the pill's small, constant footprint fixes both: nothing
+// ever changes size (no shift), and the permanent cost is minimal. When
+// expanded, the breakdown box is allowed to sit over content like any
+// normal popover/dropdown — a deliberate, temporary, user-triggered
+// overlap, not a passive one, which is standard and expected UI behavior.
 const GUTTER_VAR = "--status-widget-space";
 const BOTTOM_OFFSET_PX = 48; // matches this component's own bottom-12
 
@@ -98,22 +114,84 @@ const staticRows: StatusRow[] = [
   { label: "Explorer", health: "operational", detail: "Ready" },
 ];
 
+function Breakdown({ rows, onRefresh }: { rows: StatusRow[]; onRefresh: () => void }) {
+  return (
+    <div className="w-72 rounded border border-accent/30 bg-terminal-surface p-3 text-xs shadow-[0_0_16px_-4px_var(--color-accent)]">
+      <div className="mb-2 flex items-center justify-between">
+        <span className="text-[10px] tracking-wide text-foreground/50 uppercase">
+          System Status
+        </span>
+        <button
+          type="button"
+          onClick={onRefresh}
+          aria-label="Refresh status"
+          className="rounded p-0.5 text-foreground/40 hover:text-accent"
+        >
+          <RefreshIcon className="h-3.5 w-3.5" />
+        </button>
+      </div>
+      <ul className="flex flex-col gap-2">
+        {rows.map((row) => (
+          <li key={row.label} className="flex items-center justify-between gap-2">
+            <span className="flex shrink-0 items-center gap-2 text-foreground/80">
+              <span
+                className={`h-1.5 w-1.5 shrink-0 rounded-full ${dotColor[row.health]} ${
+                  row.health === "operational" ? "animate-pulse" : ""
+                }`}
+              />
+              <span className="whitespace-nowrap">{row.label}</span>
+            </span>
+            <span className="truncate text-right text-[10px] text-foreground/50">
+              {row.detail}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function Pill({
+  overall,
+  overallLabel,
+  open,
+  onToggle,
+}: {
+  overall: Health;
+  overallLabel: string;
+  open: boolean;
+  onToggle?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      className="flex items-center gap-2 rounded border border-accent/30 bg-terminal-surface px-3 py-1.5 text-xs text-foreground/70 shadow-[0_0_16px_-4px_var(--color-accent)] hover:border-accent/70 hover:text-accent"
+    >
+      <span
+        className={`h-1.5 w-1.5 shrink-0 rounded-full ${dotColor[overall]} ${
+          overall === "operational" ? "animate-pulse" : ""
+        }`}
+      />
+      {overallLabel}
+      <ChevronIcon className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
+    </button>
+  );
+}
+
 export function StatusWidget() {
   // Collapsed by default — the pill itself already always shows "All
   // systems operational" (or whatever the live status is), so this still
-  // satisfies "show it by default" without permanently reserving ~178px of
-  // gutter across the whole site for the full breakdown box. That gutter
-  // was the actual root cause of the recurring "widget covers content"
-  // reports — a row landing right at the (correctly computed) boundary
-  // reads as broken regardless of whether it's truly overlapped or just
-  // clipped by the reserved space. Click to expand still works the same.
+  // satisfies "show it by default" without permanently reserving the full
+  // breakdown box's height for something usually not open.
   const [open, setOpen] = useState(false);
   const [github, setGithub] = useState<StatusRow>(CHECKING);
   const [repos, setRepos] = useState<StatusRow>(REPOS_CHECKING);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = containerRef.current;
+    const el = measureRef.current;
     if (!el) return;
 
     const publish = () => {
@@ -125,9 +203,6 @@ export function StatusWidget() {
     const observer = new ResizeObserver(publish);
     observer.observe(el);
     return () => observer.disconnect();
-    // Runs once — the ResizeObserver itself catches every future size
-    // change (open/close, row count, text wrapping), so re-subscribing on
-    // every `open` toggle would just be wasted churn.
   }, []);
 
   const runCheck = useCallback(() => {
@@ -167,65 +242,27 @@ export function StatusWidget() {
           : "Systems disrupted";
 
   return (
-    // bottom-12 clears the SystemFetch footer bar fixed at the very bottom
-    // of the page (z-40, below this widget's z-50).
-    <div
-      ref={containerRef}
-      className="fixed right-4 bottom-12 z-50 flex flex-col items-end gap-2 font-mono"
-    >
-      {open && (
-        <div className="w-72 rounded border border-accent/30 bg-terminal-surface p-3 text-xs shadow-[0_0_16px_-4px_var(--color-accent)]">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[10px] tracking-wide text-foreground/50 uppercase">
-              System Status
-            </span>
-            <button
-              type="button"
-              onClick={refresh}
-              aria-label="Refresh status"
-              className="rounded p-0.5 text-foreground/40 hover:text-accent"
-            >
-              <RefreshIcon className="h-3.5 w-3.5" />
-            </button>
-          </div>
-          <ul className="flex flex-col gap-2">
-            {rows.map((row) => (
-              <li
-                key={row.label}
-                className="flex items-center justify-between gap-2"
-              >
-                <span className="flex shrink-0 items-center gap-2 text-foreground/80">
-                  <span
-                    className={`h-1.5 w-1.5 shrink-0 rounded-full ${dotColor[row.health]} ${
-                      row.health === "operational" ? "animate-pulse" : ""
-                    }`}
-                  />
-                  <span className="whitespace-nowrap">{row.label}</span>
-                </span>
-                <span className="truncate text-right text-[10px] text-foreground/50">
-                  {row.detail}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        className="flex items-center gap-2 rounded border border-accent/30 bg-terminal-surface px-3 py-1.5 text-xs text-foreground/70 shadow-[0_0_16px_-4px_var(--color-accent)] hover:border-accent/70 hover:text-accent"
+    <>
+      {/* Invisible pill-only clone used to measure the permanent gutter
+          (see GUTTER_VAR comment above) — deliberately excludes Breakdown,
+          never shown, never interactive, excluded from the a11y tree. */}
+      <div
+        ref={measureRef}
+        aria-hidden="true"
+        className="pointer-events-none invisible fixed right-4 bottom-12 flex flex-col items-end gap-2 font-mono"
       >
-        <span
-          className={`h-1.5 w-1.5 shrink-0 rounded-full ${dotColor[overall]} ${
-            overall === "operational" ? "animate-pulse" : ""
-          }`}
+        <Pill overall={overall} overallLabel={overallLabel} open={false} />
+      </div>
+
+      <div className="fixed right-4 bottom-12 z-50 flex flex-col items-end gap-2 font-mono">
+        {open && <Breakdown rows={rows} onRefresh={refresh} />}
+        <Pill
+          overall={overall}
+          overallLabel={overallLabel}
+          open={open}
+          onToggle={() => setOpen((v) => !v)}
         />
-        {overallLabel}
-        <ChevronIcon
-          className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`}
-        />
-      </button>
-    </div>
+      </div>
+    </>
   );
 }

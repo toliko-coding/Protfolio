@@ -30,12 +30,22 @@ export function Explorer({ node }: { node: FSNode }) {
     // wrapping to two lines) still land at the widget's fixed screen
     // position and get genuinely covered, confirmed at 1024px width — the
     // gutter needs to change where content stops rendering, not just pad
-    // after it. The --status-widget-space var is measured live by
-    // StatusWidget itself (ResizeObserver), not a guessed pixel value, so
-    // this stays correct at any viewport size or row count.
+    // after it.
+    //
+    // --status-widget-space is measured from StatusWidget's hidden,
+    // pill-ONLY measuring clone — never its actual visible open/closed
+    // state, and never the full expanded box. Two things were tried and
+    // reverted before this (see StatusWidget's own comment for the full
+    // reasoning): reserving whatever's currently visible caused a layout
+    // shift on every toggle; reserving the expanded size unconditionally
+    // avoided that shift but permanently cost ~226px of content height on
+    // every page for a box that's open 1% of the time. Reserving just the
+    // pill keeps this padding small and genuinely constant — the expanded
+    // breakdown is allowed to overlap content like a normal popover while
+    // deliberately open, which isn't the same complaint as passive overlap.
     <div
       className="flex h-full min-h-0 flex-col"
-      style={{ paddingBottom: "calc(var(--status-widget-space, 80px) + 12px)" }}
+      style={{ paddingBottom: "calc(var(--status-widget-space, 78px) + 12px)" }}
     >
       <Breadcrumb trail={trail} />
       <div className="min-h-0 flex-1 overflow-auto">
