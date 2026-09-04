@@ -2,7 +2,6 @@ import type { FolderNode } from "@/lib/fs-types";
 import { projects } from "./projects";
 import { toolkit } from "./toolkit";
 import { programming } from "./programming";
-import { usefulCodes } from "./useful-codes";
 import { about } from "./about";
 import { skills } from "./skills";
 import { resume } from "./resume";
@@ -77,12 +76,6 @@ export const filesystem: FolderNode = {
       description: "Smaller programming projects and language experiments.",
       intro: [
         "Smaller programs and experiments outside the two flagship projects — computer vision, games, and early web work.",
-      ],
-    }),
-    folder("/useful-codes", "useful-codes", "Useful-Codes", usefulCodes, {
-      description: "Coursework archives — Python, C++, and C exercises.",
-      intro: [
-        "Raw coursework archives from learning Python, C++, and C — kept for reference, not curated as showcase projects.",
       ],
     }),
     skills,

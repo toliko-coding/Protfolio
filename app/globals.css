@@ -52,3 +52,13 @@ body {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
+
+/* Matrix-style decode, toggled by GlitchText while its characters are
+   cycling — plain accent green, no shake or color-split. Deliberately
+   keeps the surrounding font — swapping fonts here changes character
+   width and reflows the paragraph (and everything below it) for the
+   length of the animation. Reverts to normal color once resolved. */
+.matrix-decode {
+  color: var(--color-accent);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--color-accent) 60%, transparent);
+}

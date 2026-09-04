@@ -1,5 +1,5 @@
 import { filesystem } from "@/content/filesystem";
-import { isFolder, type FolderNode } from "./fs-types";
+import { isFolder, type FolderNode, type FSNode } from "./fs-types";
 import { findChildByName, getParentPath, resolvePath, toDisplayPath } from "./fs-utils";
 
 export type OutputTone = "default" | "error" | "muted" | "heading";
@@ -47,6 +47,19 @@ const pwdCommand: Command = {
   }),
 };
 
+// Everything here is read-only content, not a real filesystem — every entry
+// reports the same r--r--r-- permissions (no write, no execute) rather than
+// pretending folders are traversable or pages are runnable.
+function permissionsFor(child: FSNode): string {
+  return `${isFolder(child) ? "d" : "-"}r--r--r--`;
+}
+
+const typeLabel: Record<"folder" | "project" | "page", string> = {
+  folder: "dir",
+  project: "project",
+  page: "page",
+};
+
 const lsCommand: Command = {
   name: "ls",
   aliases: ["dir"],
@@ -69,7 +82,9 @@ const lsCommand: Command = {
     }
     return {
       lines: folder.children.map((child) => ({
-        text: isFolder(child) ? `${child.name}/` : child.name,
+        text: `${permissionsFor(child)}  ${typeLabel[child.type].padEnd(7)}  ${
+          isFolder(child) ? `${child.name}/` : child.name
+        }`,
       })),
     };
   },

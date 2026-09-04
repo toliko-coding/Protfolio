@@ -17,8 +17,19 @@ describe("ls / dir", () => {
   it("lists folders with a trailing slash and leaves without one", () => {
     const result = runCommand("ls", "/");
     const texts = result.lines.map((line) => line.text);
-    expect(texts).toContain("Projects/");
-    expect(texts).toContain("About");
+    expect(texts.some((text) => text.includes("Projects/"))).toBe(true);
+    expect(texts.some((text) => text.includes("About"))).toBe(true);
+  });
+
+  it("shows read-only permission info for every entry — d for folders, - for leaves", () => {
+    const result = runCommand("ls", "/");
+    const texts = result.lines.map((line) => line.text);
+    expect(texts.find((text) => text.includes("Projects/"))).toMatch(
+      /^dr--r--r--\s+dir\s+Projects\/$/,
+    );
+    expect(texts.find((text) => text.includes("About"))).toMatch(
+      /^-r--r--r--\s+page\s+About$/,
+    );
   });
 
   it("dir is an alias for ls", () => {
@@ -26,7 +37,7 @@ describe("ls / dir", () => {
   });
 
   it("reports an empty folder with a maintenance notice", () => {
-    const result = runCommand("ls", "/programming");
+    const result = runCommand("ls", "/cybersecurity/writeups");
     expect(result.lines[0].tone).toBe("error");
     expect(result.lines[0].text).toMatch(/no content available/i);
     expect(result.lines[1].text).toMatch(/check back soon/i);
@@ -37,7 +48,7 @@ describe("ls / dir", () => {
     // still list /projects's children, not fall back to root.
     const result = runCommand("ls", "/projects/smsnet");
     const texts = result.lines.map((line) => line.text);
-    expect(texts).toContain("WalletRadar");
+    expect(texts.some((text) => text.includes("WalletRadar"))).toBe(true);
   });
 });
 

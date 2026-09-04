@@ -58,7 +58,7 @@ const staticRows: StatusRow[] = [
 ];
 
 export function StatusWidget() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [github, setGithub] = useState<StatusRow>(CHECKING);
 
   const runCheck = useCallback(() => {

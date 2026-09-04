@@ -35,16 +35,14 @@ test("switching back to Explorer preserves terminal history", async ({
   const input = page.locator("#terminal-input");
   await input.fill("ls");
   await input.press("Enter");
-  await expect(
-    terminal.getByText("SMSNet", { exact: true }),
-  ).toBeVisible();
+  // Matched against the `ls` output line specifically — a plain "SMSNet"
+  // substring also matches the "root/projects/smsnet >" prompt.
+  await expect(terminal.getByText(/project\s+SMSNet/)).toBeVisible();
 
   await page.getByRole("button", { name: "Explorer" }).click();
   await expect(page.getByRole("heading", { name: "SMSNet" })).toBeVisible();
 
   await page.getByRole("button", { name: "Terminal" }).click();
   // The earlier `ls` output is still there — switching tabs didn't remount it.
-  await expect(
-    terminal.getByText("WalletRadar", { exact: true }),
-  ).toBeVisible();
+  await expect(terminal.getByText("WalletRadar")).toBeVisible();
 });

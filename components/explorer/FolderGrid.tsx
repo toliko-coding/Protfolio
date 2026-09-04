@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { FSNode } from "@/lib/fs-types";
 import { isFolder, isProject } from "@/lib/fs-types";
 import { CodeIcon, FileIcon, FolderIcon } from "@/components/ui/icons";
+import { GlitchText } from "./GlitchText";
+import { SystemFetch } from "./SystemFetch";
 
 interface FolderGridProps {
   nodes: FSNode[];
@@ -45,7 +47,9 @@ export function FolderGrid({ nodes, intro }: FolderGridProps) {
       {intro && intro.length > 0 && (
         <div className="flex flex-col gap-1.5 border-b border-foreground/10 pb-4 text-sm text-foreground/70">
           {intro.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
+            <p key={paragraph}>
+              <GlitchText text={paragraph} />
+            </p>
           ))}
         </div>
       )}
@@ -93,6 +97,7 @@ export function FolderGrid({ nodes, intro }: FolderGridProps) {
           </Link>
         ))}
       </div>
+      <SystemFetch />
     </div>
   );
 }

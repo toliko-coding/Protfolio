@@ -42,6 +42,6 @@ test("Back is not interactive at the root", async ({ page }) => {
 test("browsing into an intentionally empty folder shows the maintenance notice", async ({
   page,
 }) => {
-  await page.goto("/programming");
+  await page.goto("/cybersecurity/writeups");
   await expect(page.getByText("UnmountedSectionError")).toBeVisible();
 });

@@ -66,7 +66,7 @@ describe("Terminal", () => {
     renderBooted();
     runCommand("ls");
     expect(screen.getByText("ls")).toBeInTheDocument();
-    expect(screen.getByText("Projects/")).toBeInTheDocument();
+    expect(screen.getByText(/Projects\//)).toBeInTheDocument();
   });
 
   it("updates the prompt after cd and reflects it in pwd output", () => {
@@ -80,9 +80,9 @@ describe("Terminal", () => {
   it("clears prior output on `clear`", () => {
     renderBooted();
     runCommand("ls");
-    expect(screen.getByText("Projects/")).toBeInTheDocument();
+    expect(screen.getByText(/Projects\//)).toBeInTheDocument();
     runCommand("clear");
-    expect(screen.queryByText("Projects/")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Projects\//)).not.toBeInTheDocument();
   });
 
   it("navigates the shared route on open, confirming rather than duplicating the detail", () => {
