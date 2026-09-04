@@ -26,16 +26,17 @@ export function WorkspaceShell({ terminal, explorer }: WorkspaceShellProps) {
   // sm+ too, so the collapsed wrapper grows to share space equally instead
   // of shrinking to its w-10 strip, and the "collapsed" panel ends up
   // covering half the screen instead of tucking away.
+  // 1:2 (down from 2:3) gives the Explorer a bit more of the split by default.
   const terminalSize = terminalCollapsed
     ? "sm:flex-none"
     : explorerCollapsed
       ? "sm:flex-1"
-      : "sm:flex-[2]";
+      : "sm:flex-[1]";
   const explorerSize = explorerCollapsed
     ? "sm:flex-none"
     : terminalCollapsed
       ? "sm:flex-1"
-      : "sm:flex-[3]";
+      : "sm:flex-[2]";
 
   return (
     <div className="flex min-h-0 flex-1 flex-col sm:flex-row">

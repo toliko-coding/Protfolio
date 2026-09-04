@@ -35,7 +35,7 @@ export function Explorer({ node }: { node: FSNode }) {
     // this stays correct at any viewport size or row count.
     <div
       className="flex h-full min-h-0 flex-col"
-      style={{ paddingBottom: "calc(var(--status-widget-space, 226px) + 12px)" }}
+      style={{ paddingBottom: "calc(var(--status-widget-space, 80px) + 12px)" }}
     >
       <Breadcrumb trail={trail} />
       <div className="min-h-0 flex-1 overflow-auto">

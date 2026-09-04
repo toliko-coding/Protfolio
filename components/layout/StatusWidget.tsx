@@ -99,7 +99,15 @@ const staticRows: StatusRow[] = [
 ];
 
 export function StatusWidget() {
-  const [open, setOpen] = useState(true);
+  // Collapsed by default — the pill itself already always shows "All
+  // systems operational" (or whatever the live status is), so this still
+  // satisfies "show it by default" without permanently reserving ~178px of
+  // gutter across the whole site for the full breakdown box. That gutter
+  // was the actual root cause of the recurring "widget covers content"
+  // reports — a row landing right at the (correctly computed) boundary
+  // reads as broken regardless of whether it's truly overlapped or just
+  // clipped by the reserved space. Click to expand still works the same.
+  const [open, setOpen] = useState(false);
   const [github, setGithub] = useState<StatusRow>(CHECKING);
   const [repos, setRepos] = useState<StatusRow>(REPOS_CHECKING);
   const containerRef = useRef<HTMLDivElement>(null);

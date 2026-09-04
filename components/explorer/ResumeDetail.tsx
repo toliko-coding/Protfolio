@@ -1,10 +1,8 @@
 import type { ComponentType } from "react";
 import type { PageNode } from "@/lib/fs-types";
-import { siteProfile } from "@/content/profile";
 import { TypewriterHeading } from "./TypewriterHeading";
 import {
   BriefcaseIcon,
-  DownloadIcon,
   GlobeIcon,
   GraduationCapIcon,
   ShieldIcon,
@@ -44,25 +42,15 @@ export function ResumeDetail({ page }: { page: PageNode }) {
 
   return (
     <article className="flex flex-col gap-6 p-4">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <TypewriterHeading
-            key={page.name}
-            text={page.name}
-            className="font-mono text-xl font-semibold"
-          />
-          {page.description && (
-            <p className="text-sm text-foreground/60">{page.description}</p>
-          )}
-        </div>
-        <a
-          href={siteProfile.resumeHref}
-          download
-          className="flex shrink-0 items-center gap-1.5 rounded border border-accent/30 px-3 py-1.5 text-sm hover:border-accent/70 hover:bg-accent/10"
-        >
-          <DownloadIcon className="h-4 w-4" />
-          Download PDF
-        </a>
+      <div>
+        <TypewriterHeading
+          key={page.name}
+          text={page.name}
+          className="font-mono text-xl font-semibold"
+        />
+        {page.description && (
+          <p className="text-sm text-foreground/60">{page.description}</p>
+        )}
       </div>
 
       {summary?.paragraphs?.map((paragraph, index) => (

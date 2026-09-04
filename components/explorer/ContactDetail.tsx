@@ -2,19 +2,13 @@ import type { ComponentType } from "react";
 import type { PageNode } from "@/lib/fs-types";
 import { siteProfile } from "@/content/profile";
 import { TypewriterHeading } from "./TypewriterHeading";
-import {
-  GithubIcon,
-  LinkedinIcon,
-  MailIcon,
-  ResumeIcon,
-} from "@/components/ui/icons";
+import { GithubIcon, LinkedinIcon, MailIcon } from "@/components/ui/icons";
 
 interface ContactLink {
   label: string;
   value: string;
   href: string;
   icon: ComponentType<{ className?: string }>;
-  download?: boolean;
 }
 
 const links: ContactLink[] = [
@@ -35,13 +29,6 @@ const links: ContactLink[] = [
     value: siteProfile.linkedinUrl.replace(/^https?:\/\//, "").replace(/\/$/, ""),
     href: siteProfile.linkedinUrl,
     icon: LinkedinIcon,
-  },
-  {
-    label: "Resume",
-    value: "Download PDF",
-    href: siteProfile.resumeHref,
-    icon: ResumeIcon,
-    download: true,
   },
 ];
 
@@ -68,13 +55,12 @@ export function ContactDetail({ page }: { page: PageNode }) {
       ))}
 
       <div className="grid gap-3 sm:grid-cols-2">
-        {links.map(({ label, value, href, icon: Icon, download }) => (
+        {links.map(({ label, value, href, icon: Icon }) => (
           <a
             key={label}
             href={href}
-            target={download ? undefined : "_blank"}
-            rel={download ? undefined : "noopener noreferrer"}
-            download={download}
+            target="_blank"
+            rel="noopener noreferrer"
             className="group flex items-center gap-3 rounded-lg border border-foreground/10 p-4 transition-colors hover:border-accent/50 hover:bg-accent/[.04] hover:shadow-[0_0_20px_-8px_var(--color-accent)]"
           >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-accent/[.08] text-accent/80 transition-colors group-hover:border-accent group-hover:text-accent">

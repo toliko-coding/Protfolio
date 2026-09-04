@@ -1,12 +1,7 @@
 import Image from "next/image";
 import { siteProfile } from "@/content/profile";
 import { ThinkingOrb } from "@/components/ui/thinking-orbs";
-import {
-  GithubIcon,
-  LinkedinIcon,
-  MailIcon,
-  ResumeIcon,
-} from "@/components/ui/icons";
+import { GithubIcon, LinkedinIcon, MailIcon } from "@/components/ui/icons";
 
 export function Header() {
   return (
@@ -36,14 +31,6 @@ export function Header() {
         </div>
       </div>
       <nav className="flex items-center gap-1 text-xs" aria-label="Quick links">
-        <a
-          href={siteProfile.resumeHref}
-          download
-          className="flex items-center gap-1.5 rounded px-2 py-1.5 hover:bg-accent/10 hover:text-accent"
-        >
-          <ResumeIcon className="h-4 w-4" />
-          <span className="hidden sm:inline">Resume</span>
-        </a>
         <a
           href={siteProfile.githubUrl}
           target="_blank"

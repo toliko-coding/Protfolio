@@ -6,7 +6,7 @@ export const resume: PageNode = {
   name: "Resume",
   path: "/resume",
   type: "page",
-  description: "On-site resume — or download the PDF above.",
+  description: "On-site resume.",
   sections: [
     {
       heading: "Summary",
