@@ -24,6 +24,12 @@ export interface ProjectNode extends BaseNode {
   problem: string;
   techStack: string[];
   difficulty?: "low" | "medium" | "high";
+  // Ordered steps through how the system actually works end to end — not
+  // every project has this written up yet.
+  howItWorks?: string[];
+  // Concrete takeaways from building it — what changed in how I think or
+  // work, not a restatement of what the project does.
+  learnings?: string[];
   links: {
     github?: string;
     demo?: string;

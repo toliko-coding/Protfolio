@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { siteProfile } from "@/content/profile";
+import { ThinkingOrb } from "@/components/ui/thinking-orbs";
 import {
   GithubIcon,
   LinkedinIcon,
@@ -11,6 +12,13 @@ export function Header() {
   return (
     <header className="flex shrink-0 items-center justify-between gap-4 border-b border-foreground/10 px-4 py-3">
       <div className="flex min-w-0 items-center gap-3">
+        <ThinkingOrb
+          state="shaping"
+          size={20}
+          theme="dark"
+          aria-hidden="true"
+          className="shrink-0"
+        />
         <Image
           src={siteProfile.avatarSrc}
           alt={siteProfile.name}

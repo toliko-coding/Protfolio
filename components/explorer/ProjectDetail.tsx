@@ -2,11 +2,13 @@ import Image from "next/image";
 import type { ProjectNode } from "@/lib/fs-types";
 import { AndroidDownloadButton } from "./AndroidDownloadButton";
 import { TypewriterHeading } from "./TypewriterHeading";
+import { ThinkingOrb } from "@/components/ui/thinking-orbs";
 import {
   BriefcaseIcon,
   CodeIcon,
   ExternalLinkIcon,
   GithubIcon,
+  GraduationCapIcon,
   TargetIcon,
 } from "@/components/ui/icons";
 
@@ -89,6 +91,35 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
         </div>
       </div>
 
+      {project.howItWorks && project.howItWorks.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-1.5">
+            <ThinkingOrb
+              state="solving"
+              size={20}
+              theme="dark"
+              aria-hidden="true"
+            />
+            <h2 className="font-mono text-xs tracking-wide text-foreground/50 uppercase">
+              How It Works
+            </h2>
+          </div>
+          <ol className="flex flex-col gap-2.5">
+            {project.howItWorks.map((step, index) => (
+              <li
+                key={index}
+                className="flex gap-3 border-l-2 border-accent/20 pl-3 text-sm text-foreground/80"
+              >
+                <span className="font-mono text-xs text-accent/50">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
       {hasLinks && (
         <div className="flex flex-wrap items-start gap-2">
           {project.links.github && (
@@ -125,6 +156,27 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
               Docs
             </a>
           )}
+        </div>
+      )}
+
+      {project.learnings && project.learnings.length > 0 && (
+        <div className="flex flex-col gap-3 rounded-lg border border-foreground/10 p-3">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-accent/[.08] text-accent/80">
+              <GraduationCapIcon className="h-3.5 w-3.5" />
+            </span>
+            <h2 className="font-mono text-xs tracking-wide text-foreground/60 uppercase">
+              What I Learned
+            </h2>
+          </div>
+          <ul className="flex flex-col gap-2">
+            {project.learnings.map((point) => (
+              <li key={point} className="flex gap-2 text-sm text-foreground/80">
+                <span className="mt-0.5 shrink-0 text-accent/50">–</span>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
