@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { WorkspaceShell } from "@/components/layout/WorkspaceShell";
+import { StatusWidget } from "@/components/layout/StatusWidget";
 import { Terminal } from "@/components/terminal/Terminal";
 import { siteProfile } from "@/content/profile";
 import "./globals.css";
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           terminal={<Terminal />}
           explorer={<main className="contents">{children}</main>}
         />
+        <StatusWidget />
       </body>
     </html>
   );
