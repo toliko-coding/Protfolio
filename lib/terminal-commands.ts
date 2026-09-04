@@ -39,6 +39,17 @@ function currentFolder(currentPath: string): FolderNode {
   return parent && isFolder(parent) ? parent : filesystem;
 }
 
+const connectCommand: Command = {
+  name: "connect",
+  summary: "Connect to the anatolikot CLI.",
+  run: () => ({
+    lines: [
+      { text: "Connecting to anatolikot CLI...", tone: "muted" },
+      { text: "Connection established. Welcome, root.", tone: "heading" },
+    ],
+  }),
+};
+
 const pwdCommand: Command = {
   name: "pwd",
   summary: "Print the current path.",
@@ -186,6 +197,7 @@ const helpCommand: Command = {
 };
 
 export const commands: Command[] = [
+  connectCommand,
   pwdCommand,
   lsCommand,
   cdCommand,

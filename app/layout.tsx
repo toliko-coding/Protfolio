@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { WorkspaceShell } from "@/components/layout/WorkspaceShell";
 import { StatusWidget } from "@/components/layout/StatusWidget";
+import { ExplorerBootGate } from "@/components/layout/ExplorerBootGate";
 import { Terminal } from "@/components/terminal/Terminal";
 import { AutoTerminal } from "@/components/terminal/AutoTerminal";
 import { siteProfile } from "@/content/profile";
@@ -45,7 +46,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </div>
             </div>
           }
-          explorer={<main className="contents">{children}</main>}
+          explorer={
+            <main className="contents">
+              <ExplorerBootGate>{children}</ExplorerBootGate>
+            </main>
+          }
         />
         <StatusWidget />
       </body>

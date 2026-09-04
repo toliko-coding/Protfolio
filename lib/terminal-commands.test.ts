@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { runCommand } from "./terminal-commands";
 
+describe("connect", () => {
+  it("prints a connection banner and does not navigate", () => {
+    const result = runCommand("connect", "/");
+    expect(result.navigateTo).toBeUndefined();
+    expect(result.lines[0].text).toMatch(/connecting to anatolikot cli/i);
+    expect(result.lines[1].text).toMatch(/connection established/i);
+  });
+});
+
 describe("pwd", () => {
   it("prints root at root", () => {
     const result = runCommand("pwd", "/");

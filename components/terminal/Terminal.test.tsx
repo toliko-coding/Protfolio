@@ -37,9 +37,9 @@ function flushBoot() {
   });
 }
 
-// Boot now really navigates (ending on About), so tests that only care about
-// fresh interaction start from a clean slate rather than colliding with
-// whatever the boot script happened to print.
+// Boot now really navigates and ends by clearing the screen itself, but
+// tests that only care about fresh interaction clear again explicitly
+// rather than depending on that being boot's last step.
 function renderBooted() {
   render(<Terminal />);
   flushBoot();
@@ -109,16 +109,20 @@ describe("Terminal", () => {
       expect(getInput()).toHaveAttribute("readonly");
     });
 
-    it("types and executes real commands automatically, ending navigated to About", () => {
+    it("types and executes real commands automatically, ending cleared on root with help listed", () => {
       render(<Terminal />);
       flushBoot();
-      // The scripted sequence includes `cd projects` and `open SMSNet` —
-      // real commands run through the real engine, not scripted text — and
-      // ends on the real About route so the Explorer follows along live.
-      expect(screen.getByText("cd projects")).toBeInTheDocument();
-      expect(screen.getByText(/opened smsnet/i)).toBeInTheDocument();
-      expect(screen.getByText(/opened about/i)).toBeInTheDocument();
-      expect(mockRouter.path).toBe("/about");
+      // The scripted sequence includes `cd projects` — a real command run
+      // through the real engine, not scripted text — but the closing
+      // `clear` wipes its output, same as a real `clear` would. It never
+      // drills into a specific project (no more `open SMSNet` jump).
+      expect(screen.queryByText("cd projects")).not.toBeInTheDocument();
+      expect(screen.queryByText(/opened smsnet/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/connecting to anatolikot cli/i)).not.toBeInTheDocument();
+      // What's left is the closing `cd root` and `help`, landing back on root.
+      expect(screen.getByText("cd root")).toBeInTheDocument();
+      expect(screen.getByText(/connect — connect to the anatolikot cli/i)).toBeInTheDocument();
+      expect(mockRouter.path).toBe("/");
       expect(getInput()).not.toHaveAttribute("readonly");
     });
 

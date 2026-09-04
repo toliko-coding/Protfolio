@@ -30,13 +30,13 @@ const toneClassName: Record<NonNullable<OutputLine["tone"]>, string> = {
 // on the root path; a deep link to a specific project/page skips straight
 // there instead of being hijacked away from what the visitor actually opened.
 const BOOT_COMMANDS = [
+  "connect",
   "pwd",
   "ls",
   "cd projects",
-  "ls",
-  "open SMSNet",
-  "cd ~",
-  "open About",
+  "clear",
+  "cd root",
+  "help",
 ];
 const BOOT_CHAR_DELAY = 45;
 const BOOT_POST_TYPE_DELAY = 350;
@@ -187,10 +187,14 @@ export function Terminal() {
           currentPath = result.navigateTo;
           routerRef.current.push(currentPath);
         }
-        setEntries((prev) => [
-          ...prev,
-          { id: nextEntryId++, prompt, input: command, lines: result.lines },
-        ]);
+        if (result.clearScreen) {
+          setEntries([]);
+        } else {
+          setEntries((prev) => [
+            ...prev,
+            { id: nextEntryId++, prompt, input: command, lines: result.lines },
+          ]);
+        }
         setTypedCommand("");
         timeoutId = setTimeout(() => runNext(index + 1), BOOT_POST_OUTPUT_DELAY);
       });
