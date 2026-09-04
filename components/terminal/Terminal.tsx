@@ -8,7 +8,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { runCommand, type OutputLine } from "@/lib/terminal-commands";
+import { getCompletions, runCommand, type OutputLine } from "@/lib/terminal-commands";
 import { toDisplayPath } from "@/lib/fs-utils";
 
 interface HistoryEntry {
@@ -249,6 +249,24 @@ export function Terminal() {
       } else {
         setHistoryIndex(nextIndex);
         setInputValue(commandHistory[nextIndex]);
+      }
+    } else if (event.key === "Tab") {
+      event.preventDefault();
+      if (isBooting) return;
+      const { completed, suggestions } = getCompletions(inputValue, path);
+      if (completed) {
+        setInputValue(completed);
+      } else if (suggestions && suggestions.length > 0) {
+        const prompt = `${toDisplayPath(path)} >`;
+        setEntries((prev) => [
+          ...prev,
+          {
+            id: nextEntryId++,
+            prompt,
+            input: inputValue,
+            lines: [{ text: suggestions.join("  "), tone: "muted" }],
+          },
+        ]);
       }
     }
   }

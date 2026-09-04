@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import { projects } from "@/content/projects";
 import { toolkit } from "@/content/toolkit";
 import { programming } from "@/content/programming";
@@ -18,11 +21,38 @@ const ROWS = [
   { label: "Languages", value: LANGUAGES },
 ];
 
+// Published as a CSS var (see StatusWidget's matching one) so Explorer/the
+// Terminal column can reserve exactly this footer's real rendered height as
+// a bottom gutter, instead of a guessed pixel value.
+const GUTTER_VAR = "--system-fetch-space";
+
 // Fixed to the very bottom of every page — below the System Status widget,
 // which floats above it (see its own bottom offset) rather than overlapping.
 export function SystemFetch() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const publish = () => {
+      document.documentElement.style.setProperty(
+        GUTTER_VAR,
+        `${el.getBoundingClientRect().height}px`,
+      );
+    };
+
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 overflow-x-auto border-t border-foreground/10 bg-terminal-surface px-4 py-2 font-mono text-xs whitespace-nowrap">
+    <div
+      ref={ref}
+      className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 overflow-x-auto border-t border-foreground/10 bg-terminal-surface px-4 py-2 font-mono text-xs whitespace-nowrap"
+    >
       <span className="text-glow shrink-0 text-accent/70">&gt;_</span>
       <span className="shrink-0 font-semibold text-accent">
         anatoli<span className="text-foreground/40">@</span>portfolio

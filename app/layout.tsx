@@ -38,11 +38,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <WorkspaceShell
           terminal={
-            // pb-9 reserves room for the SystemFetch footer (fixed, full
-            // width) below — same reasoning as Explorer's own gutter: it
-            // shrinks this column's actual height so AutoTerminal's bottom
-            // edge never ends up hidden behind that footer.
-            <div className="flex h-full min-h-0 flex-col pb-9">
+            // AutoTerminal reserves its own bottom clearance internally
+            // (padding on its scrollable div, not this outer wrapper) — see
+            // its own comment for why.
+            <div className="flex h-full min-h-0 flex-col">
               <div className="min-h-0 flex-[2]">
                 <Terminal />
               </div>

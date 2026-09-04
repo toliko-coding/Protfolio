@@ -1,7 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronIcon, RefreshIcon } from "@/components/ui/icons";
+
+// How far above its own bottom-12 offset this widget's box actually
+// reaches, published as a CSS var so other fixed-height gutters (Explorer,
+// the Terminal column) can reserve exactly that much space instead of a
+// guessed pixel value that drifts whenever this widget's content does
+// (open/closed, row count, text wrapping at a different viewport width).
+const GUTTER_VAR = "--status-widget-space";
+const BOTTOM_OFFSET_PX = 48; // matches this component's own bottom-12
 
 type Health = "operational" | "degraded" | "down" | "checking";
 
@@ -94,6 +102,25 @@ export function StatusWidget() {
   const [open, setOpen] = useState(true);
   const [github, setGithub] = useState<StatusRow>(CHECKING);
   const [repos, setRepos] = useState<StatusRow>(REPOS_CHECKING);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const publish = () => {
+      const space = BOTTOM_OFFSET_PX + el.getBoundingClientRect().height;
+      document.documentElement.style.setProperty(GUTTER_VAR, `${space}px`);
+    };
+
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => observer.disconnect();
+    // Runs once — the ResizeObserver itself catches every future size
+    // change (open/close, row count, text wrapping), so re-subscribing on
+    // every `open` toggle would just be wasted churn.
+  }, []);
 
   const runCheck = useCallback(() => {
     const controller = new AbortController();
@@ -133,8 +160,11 @@ export function StatusWidget() {
 
   return (
     // bottom-12 clears the SystemFetch footer bar fixed at the very bottom
-    // of the page (z-40, below this widget's z-50) — measured, not guessed.
-    <div className="fixed right-4 bottom-12 z-50 flex flex-col items-end gap-2 font-mono">
+    // of the page (z-40, below this widget's z-50).
+    <div
+      ref={containerRef}
+      className="fixed right-4 bottom-12 z-50 flex flex-col items-end gap-2 font-mono"
+    >
       {open && (
         <div className="w-72 rounded border border-accent/30 bg-terminal-surface p-3 text-xs shadow-[0_0_16px_-4px_var(--color-accent)]">
           <div className="mb-2 flex items-center justify-between">

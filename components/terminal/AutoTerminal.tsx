@@ -205,9 +205,18 @@ export function AutoTerminal() {
           Auto-Recon — Simulated Feed
         </span>
       </div>
+      {/*
+        paddingBottom reserves room for the SystemFetch footer (fixed, full
+        width, below) on the scrollable div itself — this panel always
+        auto-scrolls to its own bottom on new output, so the padding just
+        becomes blank trailing space the feed scrolls past, rather than
+        clipping the newest line against a shrunk container. The var is
+        SystemFetch's own live-measured height, not a guess.
+      */}
       <div
         ref={scrollRef}
         className="min-h-0 flex-1 overflow-auto p-2 whitespace-pre"
+        style={{ paddingBottom: "calc(var(--system-fetch-space, 33px) + 8px)" }}
       >
         {history.map((line) => (
           <p key={line.id} className={line.className || "text-accent/80"}>

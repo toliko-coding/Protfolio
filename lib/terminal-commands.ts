@@ -227,3 +227,108 @@ export function runCommand(input: string, currentPath: string): CommandResult {
 
   return command.run({ currentPath, args });
 }
+
+export interface CompletionResult {
+  // The full input string to replace the current one with — either a fully
+  // completed word (trailing space added) or as far as an unambiguous
+  // common prefix reaches.
+  completed?: string;
+  // Shown as output (like bash's double-Tab listing) when several
+  // candidates match and completion can't make further progress.
+  suggestions?: string[];
+}
+
+function longestCommonPrefix(words: string[]): string {
+  let prefix = words[0] ?? "";
+  for (const word of words.slice(1)) {
+    let i = 0;
+    while (i < prefix.length && i < word.length && prefix[i].toLowerCase() === word[i].toLowerCase()) {
+      i++;
+    }
+    prefix = prefix.slice(0, i);
+    if (!prefix) break;
+  }
+  return prefix;
+}
+
+// Classic edit distance — used only as a fallback so a small typo (one
+// swapped/missing/extra letter) can still resolve to the word that was
+// obviously meant, the way real shells never quite manage to.
+function levenshtein(a: string, b: string): number {
+  const rows = a.length + 1;
+  const cols = b.length + 1;
+  const dp: number[][] = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  for (let i = 0; i < rows; i++) dp[i][0] = i;
+  for (let j = 0; j < cols; j++) dp[0][j] = j;
+  for (let i = 1; i < rows; i++) {
+    for (let j = 1; j < cols; j++) {
+      dp[i][j] =
+        a[i - 1] === b[j - 1]
+          ? dp[i - 1][j - 1]
+          : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    }
+  }
+  return dp[a.length][b.length];
+}
+
+// Resolves one word (a command name, or a cd/open argument) against a pool
+// of candidates: exact-prefix matches first, falling back to the closest
+// typo-tolerant match only when no prefix matches at all.
+function resolveWord(
+  prefix: string,
+  pool: string[],
+): { word?: string; isFinal?: boolean; suggestions?: string[] } {
+  const lowerPrefix = prefix.toLowerCase();
+  let matches = pool.filter((item) => item.toLowerCase().startsWith(lowerPrefix));
+
+  if (matches.length === 0 && prefix) {
+    const [best] = [...pool]
+      .map((item) => ({ item, distance: levenshtein(lowerPrefix, item.toLowerCase()) }))
+      .sort((a, b) => a.distance - b.distance);
+    if (best && best.distance > 0 && best.distance <= Math.max(2, Math.ceil(prefix.length / 2))) {
+      matches = [best.item];
+    }
+  }
+
+  if (matches.length === 0) return {};
+  if (matches.length === 1) return { word: matches[0], isFinal: true };
+
+  const commonPrefix = longestCommonPrefix(matches);
+  if (commonPrefix.length > prefix.length) return { word: commonPrefix };
+  return { suggestions: [...matches].sort() };
+}
+
+// Tab-completion for the terminal input — completes the command name itself
+// (first word), or a cd/open target against the current folder's children,
+// tolerating an unfinished or slightly misspelled word the same way.
+export function getCompletions(input: string, currentPath: string): CompletionResult {
+  const hasTrailingSpace = /\s$/.test(input);
+  const parts = input.trim().split(/\s+/).filter(Boolean);
+  const completingCommand = parts.length === 0 || (parts.length === 1 && !hasTrailingSpace);
+
+  if (completingCommand) {
+    const names = new Set<string>();
+    for (const command of commands) {
+      names.add(command.name);
+      command.aliases?.forEach((alias) => names.add(alias));
+    }
+    const result = resolveWord(parts[0] ?? "", [...names]);
+    if (!result.word) return { suggestions: result.suggestions };
+    return { completed: result.isFinal ? `${result.word} ` : result.word };
+  }
+
+  const commandName = parts[0].toLowerCase();
+  const command = commands.find(
+    (c) => c.name === commandName || c.aliases?.includes(commandName),
+  );
+  if (!command || (command.name !== "cd" && command.name !== "open")) return {};
+
+  const argPrefix = hasTrailingSpace ? "" : (parts[parts.length - 1] ?? "");
+  const pool = currentFolder(currentPath).children.map((child) => child.name);
+  const result = resolveWord(argPrefix, pool);
+  if (!result.word) return { suggestions: result.suggestions };
+
+  const before = hasTrailingSpace ? parts.join(" ") : parts.slice(0, -1).join(" ");
+  const full = `${before}${before ? " " : ""}${result.word}`;
+  return { completed: result.isFinal ? `${full} ` : full };
+}

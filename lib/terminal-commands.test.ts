@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { runCommand } from "./terminal-commands";
+import { getCompletions, runCommand } from "./terminal-commands";
 
 describe("connect", () => {
   it("prints a connection banner and does not navigate", () => {
@@ -160,6 +160,41 @@ describe("help", () => {
     expect(joined).toContain("pwd");
     expect(joined).toContain("cd");
     expect(joined).toContain("open");
+  });
+});
+
+describe("tab completion", () => {
+  it("completes an unambiguous command prefix with a trailing space", () => {
+    expect(getCompletions("p", "/").completed).toBe("pwd ");
+  });
+
+  it("lists suggestions when a command prefix is ambiguous", () => {
+    const result = getCompletions("c", "/");
+    expect(result.completed).toBeUndefined();
+    expect(result.suggestions).toEqual(["cd", "clear", "connect"]);
+  });
+
+  it("completes an unfinished cd/open argument against the current folder", () => {
+    expect(getCompletions("cd proj", "/").completed).toBe("cd Projects ");
+    expect(getCompletions("open smsnet", "/projects").completed).toBe(
+      "open SMSNet ",
+    );
+  });
+
+  it("tolerates a small typo when nothing matches as a prefix", () => {
+    // Transposed letters ("projcets" vs "projects") — no real folder starts
+    // with that, but it's obviously what was meant.
+    expect(getCompletions("cd projcets", "/").completed).toBe("cd Projects ");
+  });
+
+  it("lists every child as suggestions when the argument is empty and ambiguous", () => {
+    const result = getCompletions("cd ", "/cybersecurity");
+    expect(result.completed).toBeUndefined();
+    expect(result.suggestions).toEqual(["Toolkit", "Write-ups"]);
+  });
+
+  it("returns nothing for a command that takes no path argument", () => {
+    expect(getCompletions("pwd some", "/")).toEqual({});
   });
 });
 
