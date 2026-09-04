@@ -28,7 +28,7 @@ export function Explorer({ node }: { node: FSNode }) {
     // Padding on the scrollable div itself wouldn't do this: its height is
     // already fixed by flex-1, so trailing padding would just add scrollable
     // empty space after the content rather than shrinking where it renders.
-    <div className="flex h-full min-h-0 flex-col pb-52">
+    <div className="flex h-full min-h-0 flex-col pb-60">
       <Breadcrumb trail={trail} />
       <div className="min-h-0 flex-1 overflow-auto">
         {isFolder(node) && (

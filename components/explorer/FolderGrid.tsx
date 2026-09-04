@@ -3,7 +3,6 @@ import type { FSNode } from "@/lib/fs-types";
 import { isFolder, isProject } from "@/lib/fs-types";
 import { CodeIcon, FileIcon, FolderIcon } from "@/components/ui/icons";
 import { GlitchText } from "./GlitchText";
-import { SystemFetch } from "./SystemFetch";
 
 interface FolderGridProps {
   nodes: FSNode[];
@@ -97,7 +96,6 @@ export function FolderGrid({ nodes, intro }: FolderGridProps) {
           </Link>
         ))}
       </div>
-      <SystemFetch />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { StatusWidget } from "@/components/layout/StatusWidget";
 import { ExplorerBootGate } from "@/components/layout/ExplorerBootGate";
 import { Terminal } from "@/components/terminal/Terminal";
 import { AutoTerminal } from "@/components/terminal/AutoTerminal";
+import { SystemFetch } from "@/components/explorer/SystemFetch";
 import { siteProfile } from "@/content/profile";
 import "./globals.css";
 
@@ -37,7 +38,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <WorkspaceShell
           terminal={
-            <div className="flex h-full min-h-0 flex-col">
+            // pb-9 reserves room for the SystemFetch footer (fixed, full
+            // width) below — same reasoning as Explorer's own gutter: it
+            // shrinks this column's actual height so AutoTerminal's bottom
+            // edge never ends up hidden behind that footer.
+            <div className="flex h-full min-h-0 flex-col pb-9">
               <div className="min-h-0 flex-[2]">
                 <Terminal />
               </div>
@@ -53,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }
         />
         <StatusWidget />
+        <SystemFetch />
       </body>
     </html>
   );

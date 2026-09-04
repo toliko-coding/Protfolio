@@ -24,6 +24,18 @@ const CHECKING: StatusRow = {
   detail: "Checking…",
 };
 
+const REPOS_CHECKING: StatusRow = {
+  label: "Repos",
+  health: "checking",
+  detail: "Checking…",
+};
+
+// GitHub's public API can only report a public repo count for another
+// user — it has no unauthenticated way to see how many are private. This
+// is a manually-tracked fact (toliko-coding, checked 2026-09-04), not
+// something this page can verify live — update it if that count changes.
+const KNOWN_PRIVATE_REPOS = 27;
+
 // Statuspage's v2 summary endpoint is meant for public, unauthenticated
 // embeds like this one — it's the same feed githubstatus.com's own badge uses.
 // Returns null on abort (effect cleanup, fast navigation) so the caller can
@@ -51,8 +63,29 @@ async function checkGithubStatus(signal: AbortSignal): Promise<StatusRow | null>
   }
 }
 
+// Live public repo count from GitHub's own API, paired with the manually
+// tracked private count above.
+async function checkRepoStats(signal: AbortSignal): Promise<StatusRow | null> {
+  try {
+    const res = await fetch("https://api.github.com/users/toliko-coding", {
+      signal,
+    });
+    if (!res.ok) throw new Error("bad response");
+    const data = await res.json();
+    const publicRepos = data?.public_repos as number | undefined;
+    if (typeof publicRepos !== "number") throw new Error("missing public_repos");
+    return {
+      label: "Repos",
+      health: "operational",
+      detail: `${publicRepos} public, ${KNOWN_PRIVATE_REPOS} private`,
+    };
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") return null;
+    return { label: "Repos", health: "down", detail: "Unreachable" };
+  }
+}
+
 const staticRows: StatusRow[] = [
-  { label: "Portfolio", health: "operational", detail: "You're looking at it" },
   { label: "Terminal", health: "operational", detail: "Ready" },
   { label: "Explorer", health: "operational", detail: "Ready" },
 ];
@@ -60,11 +93,15 @@ const staticRows: StatusRow[] = [
 export function StatusWidget() {
   const [open, setOpen] = useState(true);
   const [github, setGithub] = useState<StatusRow>(CHECKING);
+  const [repos, setRepos] = useState<StatusRow>(REPOS_CHECKING);
 
   const runCheck = useCallback(() => {
     const controller = new AbortController();
     checkGithubStatus(controller.signal).then((result) => {
       if (result) setGithub(result);
+    });
+    checkRepoStats(controller.signal).then((result) => {
+      if (result) setRepos(result);
     });
     return () => controller.abort();
   }, []);
@@ -73,10 +110,11 @@ export function StatusWidget() {
 
   const refresh = () => {
     setGithub(CHECKING);
+    setRepos(REPOS_CHECKING);
     runCheck();
   };
 
-  const rows = [github, ...staticRows];
+  const rows = [github, repos, ...staticRows];
   const overall: Health = rows.some((row) => row.health === "down")
     ? "down"
     : rows.some((row) => row.health === "degraded")
@@ -94,7 +132,9 @@ export function StatusWidget() {
           : "Systems disrupted";
 
   return (
-    <div className="fixed right-4 bottom-4 z-50 flex flex-col items-end gap-2 font-mono">
+    // bottom-12 clears the SystemFetch footer bar fixed at the very bottom
+    // of the page (z-40, below this widget's z-50) — measured, not guessed.
+    <div className="fixed right-4 bottom-12 z-50 flex flex-col items-end gap-2 font-mono">
       {open && (
         <div className="w-72 rounded border border-accent/30 bg-terminal-surface p-3 text-xs shadow-[0_0_16px_-4px_var(--color-accent)]">
           <div className="mb-2 flex items-center justify-between">

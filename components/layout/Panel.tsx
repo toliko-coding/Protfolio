@@ -17,12 +17,17 @@ export function Panel({
   children,
 }: PanelProps) {
   if (collapsed) {
+    // Deliberately doesn't spread the incoming `className` ("w-full", meant
+    // for the expanded section filling its flex wrapper) — that fought this
+    // button's own w-10 for the width property, and depending on Tailwind's
+    // generated rule order could win, stretching "collapsed" to half the
+    // screen instead of down to a slim strip.
     return (
       <button
         type="button"
         onClick={onToggle}
         aria-label={`Expand ${title}`}
-        className={`hidden w-10 shrink-0 flex-col items-center gap-3 bg-foreground/[.03] py-3 hover:bg-accent/[.08] sm:flex ${className}`}
+        className="hidden w-10 shrink-0 flex-col items-center gap-3 bg-foreground/[.03] py-3 hover:bg-accent/[.08] sm:flex"
       >
         <ExpandIcon className="h-4 w-4 text-accent/60" />
         <span className="[writing-mode:vertical-rl] rotate-180 font-mono text-xs tracking-wide text-foreground/60">

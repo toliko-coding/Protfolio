@@ -21,13 +21,18 @@ export function WorkspaceShell({ terminal, explorer }: WorkspaceShellProps) {
   const terminalCollapsed = collapsedPanel === "terminal";
   const explorerCollapsed = collapsedPanel === "explorer";
 
+  // sm:flex-none on the collapsed side matters, not just cosmetic — without
+  // it, the base (unprefixed, mobile-default) flex-1 below still applies at
+  // sm+ too, so the collapsed wrapper grows to share space equally instead
+  // of shrinking to its w-10 strip, and the "collapsed" panel ends up
+  // covering half the screen instead of tucking away.
   const terminalSize = terminalCollapsed
-    ? ""
+    ? "sm:flex-none"
     : explorerCollapsed
       ? "sm:flex-1"
       : "sm:flex-[2]";
   const explorerSize = explorerCollapsed
-    ? ""
+    ? "sm:flex-none"
     : terminalCollapsed
       ? "sm:flex-1"
       : "sm:flex-[3]";
