@@ -5,7 +5,6 @@ import { programming } from "./programming";
 import { about } from "./about";
 import { skills } from "./skills";
 import { resume } from "./resume";
-import { contact } from "./contact";
 
 function folder(
   path: string,
@@ -80,7 +79,6 @@ export const filesystem: FolderNode = {
     }),
     skills,
     resume,
-    contact,
   ]),
   intro: [
     "Software engineering & cybersecurity portfolio, built to explore like a computer rather than scroll like a webpage.",

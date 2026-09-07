@@ -3,18 +3,17 @@ import { getBreadcrumbTrail } from "@/lib/fs-utils";
 import { isFolder, isPage, isProject, type FSNode, type PageNode } from "@/lib/fs-types";
 import { Breadcrumb } from "./Breadcrumb";
 import { FolderGrid } from "./FolderGrid";
+import { DomainRadar } from "./DomainRadar";
 import { ProjectDetail } from "./ProjectDetail";
 import { PageDetail } from "./PageDetail";
 import { SkillsDetail } from "./SkillsDetail";
 import { ResumeDetail } from "./ResumeDetail";
-import { ContactDetail } from "./ContactDetail";
 
 // A handful of singleton pages get a purpose-built layout instead of the
 // generic PageDetail — keyed by slug since each only exists once in the tree.
 const pageOverrides: Record<string, ComponentType<{ page: PageNode }>> = {
   skills: SkillsDetail,
   resume: ResumeDetail,
-  contact: ContactDetail,
 };
 
 export function Explorer({ node }: { node: FSNode }) {
@@ -50,7 +49,14 @@ export function Explorer({ node }: { node: FSNode }) {
       <Breadcrumb trail={trail} />
       <div className="min-h-0 flex-1 overflow-auto">
         {isFolder(node) && (
-          <FolderGrid nodes={node.children} intro={node.intro} />
+          <>
+            <FolderGrid nodes={node.children} intro={node.intro} />
+            {node.path === "/" && (
+              <div className="px-4 pb-4">
+                <DomainRadar />
+              </div>
+            )}
+          </>
         )}
         {isProject(node) && <ProjectDetail project={node} />}
         {isPage(node) &&

@@ -181,11 +181,11 @@ function Pill({
 }
 
 export function StatusWidget() {
-  // Collapsed by default — the pill itself already always shows "All
-  // systems operational" (or whatever the live status is), so this still
-  // satisfies "show it by default" without permanently reserving the full
-  // breakdown box's height for something usually not open.
-  const [open, setOpen] = useState(false);
+  // Expanded by default, per explicit request — the visitor can still
+  // collapse it via the pill's toggle. The permanent layout gutter still
+  // only reserves the pill's footprint (see GUTTER_VAR above); while open,
+  // the breakdown box overlaps content like any other popover.
+  const [open, setOpen] = useState(true);
   const [github, setGithub] = useState<StatusRow>(CHECKING);
   const [repos, setRepos] = useState<StatusRow>(REPOS_CHECKING);
   const measureRef = useRef<HTMLDivElement>(null);

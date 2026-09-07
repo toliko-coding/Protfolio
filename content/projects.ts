@@ -68,35 +68,36 @@ export const projects: ProjectNode[] = [
     type: "project",
     tags: ["software"],
     summary:
-      "Solana blockchain intelligence and paper-trading research platform for analyzing wallet activity — no real trading, fully virtual simulation. In active development.",
+      "Solana wallet-intelligence platform that discovers and ranks high-performing wallets by trading history, PnL, ROI, and a composite Smart Score — research only, no real trades placed. In active development.",
     role: "Developer",
     problem:
-      "Gives researchers wallet-level analytics on Solana without financial risk, using a virtual paper-trading simulator instead of real trades.",
+      "Gives researchers a way to analyze Solana wallet performance and spot consistently strong traders without financial risk, starting with a manual wallet lookup — automated discovery and paper trading are still ahead on the roadmap.",
     techStack: [
       "Next.js",
       "TypeScript",
       "Tailwind CSS",
+      "Zod",
       "Supabase",
       "Birdeye API",
       "Helius API",
+      "Vitest",
     ],
     howItWorks: [
-      "Helius and Birdeye APIs stream on-chain Solana transaction and price data for tracked wallets.",
-      "A scoring pipeline aggregates each wallet's trade history into PnL, ROI, and a composite Smart Score.",
-      "Supabase stores wallet snapshots and serves the ranked, filterable dashboard views.",
-      "A virtual paper-trading simulator mirrors top-ranked wallets' strategies without executing any real trades.",
+      "A wallet address entered at /discover is looked up against Helius and Birdeye for on-chain Solana transaction and price data.",
+      "A scoring pipeline classifies each trade and aggregates PnL, ROI, and a composite Smart Score, tagging every metric with its data reliability.",
+      "Zod validates all environment and API configuration; Supabase can optionally persist wallet snapshots once configured.",
+      "Automated wallet discovery, a public leaderboard, and the paper-trading simulator are the next phases — not built yet.",
     ],
     learnings: [
       "Reconciling two different blockchain data providers (Helius, Birdeye) meant normalizing inconsistent data shapes and rate limits into one coherent model.",
       "Designing a fair scoring formula across wallets with very different trade volumes was harder than expected — naive PnL ranking rewards one lucky trade over consistent performance.",
-      "Keeping it strictly paper-trading was a deliberate choice, to explore the analytics problem without financial risk.",
+      "Shipping the manual analyzer before automated discovery or paper trading kept each phase testable on its own — Vitest covers the cost-basis and Smart Score math directly — instead of building the whole pipeline before any of it worked end to end.",
     ],
     flowDiagram: {
       nodes: [
-        { icon: "globe", label: "On-Chain Data" },
+        { icon: "globe", label: "Wallet Lookup" },
         { icon: "sparkle", label: "Smart Score" },
-        { icon: "cloud", label: "Supabase" },
-        { icon: "target", label: "Paper Trade" },
+        { icon: "cloud", label: "Supabase (optional)" },
       ],
     },
     links: {
@@ -115,17 +116,26 @@ export const projects: ProjectNode[] = [
     role: "Developer",
     problem:
       "Replaces scattered paper bills and receipts with a single organized, searchable digital system, using a provider-agnostic OCR/AI interface so no vendor is hardcoded.",
-    techStack: ["React Native (Expo)", "TypeScript", "Supabase", "Zod", "Expo Router"],
+    techStack: [
+      "React Native (Expo)",
+      "TypeScript",
+      "Supabase",
+      "Zod",
+      "Expo Router",
+      "Claude (Anthropic API)",
+      "React Query",
+    ],
     howItWorks: [
       "A document is captured via camera, gallery, or PDF picker and uploaded to a private Supabase Storage bucket, hashed with SHA-256 to catch duplicates.",
-      "A provider-agnostic DocumentProcessor interface hands the file to an OCR/AI backend (currently mocked in development) to extract bill details.",
+      "A provider-agnostic DocumentProcessor interface hands the file to Claude, via the Anthropic API, to extract bill details — swapping AI vendors later wouldn't touch the rest of the app.",
       "Zod schemas validate the AI's structured output before anything reaches the database — untrusted model output never gets written to Postgres directly.",
       "Supabase Row Level Security scopes every query to the signed-in user, so bills and documents are private by construction, not just by app logic.",
     ],
     learnings: [
-      "Building the OCR/AI integration behind an interface first — with an honest mock — let the rest of the app (review flow, storage, UI) get built and tested before committing to any AI vendor.",
+      "Building the OCR/AI integration behind a provider-agnostic interface first — starting with an honest mock — made it straightforward to wire in Claude via the Anthropic API later without touching the review flow, storage, or UI.",
       "Validating AI output with Zod before it touches the database was a deliberate boundary: treat model output like any other untrusted input.",
       "Row Level Security pushed authorization down into the database itself, instead of trusting every API call to remember to filter by user.",
+      "Supporting Hebrew alongside English meant designing the UI for RTL layout from the start, not retrofitting it after building everything left-to-right first.",
     ],
     flowDiagram: {
       nodes: [

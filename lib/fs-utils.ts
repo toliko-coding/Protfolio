@@ -1,5 +1,5 @@
 import { filesystem } from "@/content/filesystem";
-import { isFolder, type FolderNode, type FSNode } from "./fs-types";
+import { isFolder, isProject, type FolderNode, type FSNode, type ProjectNode } from "./fs-types";
 
 export function normalizePath(path: string): string {
   if (path === "" || path === "/") return "/";
@@ -51,6 +51,15 @@ export function getBreadcrumbTrail(path: string): FSNode[] {
 export function getAllPaths(node: FSNode = filesystem): string[] {
   if (!isFolder(node)) return [node.path];
   return [node.path, ...node.children.flatMap((child) => getAllPaths(child))];
+}
+
+// Every ProjectNode in the tree, regardless of which folder holds it — used
+// to summarize the tech/discipline span across the whole site, not just one
+// section of it.
+export function getAllProjects(node: FSNode = filesystem): ProjectNode[] {
+  if (isProject(node)) return [node];
+  if (!isFolder(node)) return [];
+  return node.children.flatMap((child) => getAllProjects(child));
 }
 
 export function getParentPath(path: string): string {

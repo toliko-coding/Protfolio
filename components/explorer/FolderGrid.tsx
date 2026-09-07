@@ -3,6 +3,7 @@ import type { FSNode } from "@/lib/fs-types";
 import { isFolder, isProject } from "@/lib/fs-types";
 import { CodeIcon, FileIcon, FolderIcon } from "@/components/ui/icons";
 import { GlitchText } from "./GlitchText";
+import { FlowDiagram } from "./FlowDiagram";
 
 interface FolderGridProps {
   nodes: FSNode[];
@@ -52,12 +53,14 @@ export function FolderGrid({ nodes, intro }: FolderGridProps) {
           ))}
         </div>
       )}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {nodes.map((node) => (
           <Link
             key={node.id}
             href={node.path}
-            className="group flex flex-col gap-2 rounded-lg border border-foreground/10 p-3 transition-colors hover:border-accent/50 hover:bg-accent/[.04] hover:shadow-[0_0_16px_-8px_var(--color-accent)]"
+            className={`group flex flex-col gap-2 rounded-lg border border-foreground/10 transition-colors hover:border-accent/50 hover:bg-accent/[.04] hover:shadow-[0_0_16px_-8px_var(--color-accent)] ${
+              isProject(node) ? "p-4" : "p-3"
+            }`}
           >
             <div className="flex items-center gap-2">
               <NodeIcon
@@ -84,9 +87,19 @@ export function FolderGrid({ nodes, intro }: FolderGridProps) {
               </div>
             )}
             {isProject(node) && (
-              <span className="line-clamp-2 text-xs text-foreground/60">
-                {node.summary}
-              </span>
+              <span className="text-xs text-foreground/60">{node.summary}</span>
+            )}
+            {isProject(node) && node.problem && (
+              <span className="text-xs text-foreground/45">{node.problem}</span>
+            )}
+            {isProject(node) && node.flowDiagram && (
+              <div className="mt-1 rounded-md border border-foreground/10 bg-foreground/[.02] p-2">
+                <FlowDiagram
+                  nodes={node.flowDiagram.nodes}
+                  loopFromIndex={node.flowDiagram.loopFromIndex}
+                  compact
+                />
+              </div>
             )}
             {!isProject(node) && node.description && (
               <span className="line-clamp-2 text-xs text-foreground/60">

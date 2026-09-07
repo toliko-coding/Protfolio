@@ -34,6 +34,10 @@ interface FlowDiagramProps {
   // return path — a literal feedback loop, for a project whose own last
   // step folds back into an earlier stage.
   loopFromIndex?: number;
+  // A small, label-free preview for grid cards — same nodes and arrows, no
+  // room for text or the loop detail at thumbnail size, so it always just
+  // shows a single repeating pass left to right.
+  compact?: boolean;
 }
 
 const VIEW_WIDTH = 640;
@@ -43,10 +47,15 @@ const NODE_RADIUS = 20;
 const MARGIN = 56;
 const HOP_SECONDS = 0.9;
 
-function straightPath(positions: number[], from: number, to: number): string {
+const COMPACT_VIEW_HEIGHT = 44;
+const COMPACT_TOP_Y = 22;
+const COMPACT_NODE_RADIUS = 12;
+const COMPACT_MARGIN = 20;
+
+function straightPath(positions: number[], topY: number, from: number, to: number): string {
   return positions
     .slice(from, to + 1)
-    .map((x, i) => `${i === 0 ? "M" : "L"} ${x},${TOP_Y}`)
+    .map((x, i) => `${i === 0 ? "M" : "L"} ${x},${topY}`)
     .join(" ");
 }
 
@@ -57,22 +66,35 @@ function returnArc(positions: number[], from: number): string {
 }
 
 function loopPath(positions: number[], from: number): string {
-  const straight = straightPath(positions, from, positions.length - 1);
+  const straight = straightPath(positions, TOP_Y, from, positions.length - 1);
   const arc = returnArc(positions, from).replace(/^M [^C]+/, "");
   return `${straight} ${arc}`;
 }
 
 // Pure SVG + native SMIL animation (<animateMotion>) — no client JS needed,
 // this animates in the browser on its own once rendered.
-export function FlowDiagram({ nodes, loopFromIndex }: FlowDiagramProps) {
+export function FlowDiagram({ nodes, loopFromIndex, compact = false }: FlowDiagramProps) {
   const count = nodes.length;
   if (count < 2) return null;
 
-  const step = (VIEW_WIDTH - MARGIN * 2) / (count - 1);
-  const positions = nodes.map((_, i) => MARGIN + step * i);
+  const topY = compact ? COMPACT_TOP_Y : TOP_Y;
+  const nodeRadius = compact ? COMPACT_NODE_RADIUS : NODE_RADIUS;
+  const margin = compact ? COMPACT_MARGIN : MARGIN;
+  const iconSize = compact ? 12 : 18;
+
+  const step = (VIEW_WIDTH - margin * 2) / (count - 1);
+  const positions = nodes.map((_, i) => margin + step * i);
   const hasLoop =
-    typeof loopFromIndex === "number" && loopFromIndex >= 0 && loopFromIndex < count - 1;
-  const viewHeight = hasLoop ? 160 : 96;
+    !compact &&
+    typeof loopFromIndex === "number" &&
+    loopFromIndex >= 0 &&
+    loopFromIndex < count - 1;
+  const viewHeight = compact ? COMPACT_VIEW_HEIGHT : hasLoop ? 160 : 96;
+
+  // Marker ids are global to the document — several of these can render at
+  // once in a project grid, so each needs its own rather than sharing
+  // "flow-arrow" and silently reusing whichever instance defined it first.
+  const arrowId = `flow-arrow-${nodes.map((n) => n.label).join("-").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
   const dotMotion = hasLoop ? (
     <>
@@ -81,7 +103,7 @@ export function FlowDiagram({ nodes, loopFromIndex }: FlowDiagramProps) {
       {loopFromIndex! > 0 && (
         <animateMotion
           id="flow-intro"
-          path={straightPath(positions, 0, loopFromIndex!)}
+          path={straightPath(positions, topY, 0, loopFromIndex!)}
           dur={`${loopFromIndex! * HOP_SECONDS}s`}
           begin="0s"
           fill="freeze"
@@ -96,7 +118,7 @@ export function FlowDiagram({ nodes, loopFromIndex }: FlowDiagramProps) {
     </>
   ) : (
     <animateMotion
-      path={straightPath(positions, 0, count - 1)}
+      path={straightPath(positions, topY, 0, count - 1)}
       dur={`${(count - 1) * HOP_SECONDS}s`}
       repeatCount="indefinite"
     />
@@ -112,7 +134,7 @@ export function FlowDiagram({ nodes, loopFromIndex }: FlowDiagramProps) {
       }`}
     >
       <defs>
-        <marker id="flow-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+        <marker id={arrowId} markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
           <path d="M0,0 L8,4 L0,8 Z" fill="var(--color-accent)" fillOpacity="0.5" />
         </marker>
       </defs>
@@ -121,13 +143,13 @@ export function FlowDiagram({ nodes, loopFromIndex }: FlowDiagramProps) {
         <line
           key={i}
           x1={x}
-          y1={TOP_Y}
+          y1={topY}
           x2={positions[i + 1]}
-          y2={TOP_Y}
+          y2={topY}
           stroke="var(--color-accent)"
           strokeOpacity="0.3"
-          strokeWidth="1.5"
-          markerEnd="url(#flow-arrow)"
+          strokeWidth={compact ? 1 : 1.5}
+          markerEnd={`url(#${arrowId})`}
         />
       ))}
 
@@ -139,7 +161,7 @@ export function FlowDiagram({ nodes, loopFromIndex }: FlowDiagramProps) {
           strokeOpacity="0.25"
           strokeWidth="1.5"
           strokeDasharray="4 3"
-          markerEnd="url(#flow-arrow)"
+          markerEnd={`url(#${arrowId})`}
         />
       )}
 
@@ -150,33 +172,41 @@ export function FlowDiagram({ nodes, loopFromIndex }: FlowDiagramProps) {
           <g key={i}>
             <circle
               cx={x}
-              cy={TOP_Y}
-              r={NODE_RADIUS}
+              cy={topY}
+              r={nodeRadius}
               fill="var(--color-terminal-surface)"
               stroke="var(--color-accent)"
               strokeOpacity="0.4"
-              strokeWidth="1.5"
+              strokeWidth={compact ? 1 : 1.5}
             />
-            <svg x={x - 9} y={TOP_Y - 9} width="18" height="18" viewBox="0 0 24 24">
+            <svg
+              x={x - iconSize / 2}
+              y={topY - iconSize / 2}
+              width={iconSize}
+              height={iconSize}
+              viewBox="0 0 24 24"
+            >
               <Icon className="text-accent/80" />
             </svg>
-            <text
-              x={x}
-              y={TOP_Y + NODE_RADIUS + 16}
-              textAnchor="middle"
-              fontSize="10"
-              className="fill-foreground/70 font-mono"
-            >
-              {node.label}
-            </text>
+            {!compact && (
+              <text
+                x={x}
+                y={topY + nodeRadius + 16}
+                textAnchor="middle"
+                fontSize="10"
+                className="fill-foreground/70 font-mono"
+              >
+                {node.label}
+              </text>
+            )}
           </g>
         );
       })}
 
       <circle
-        r="4"
+        r={compact ? 2.5 : 4}
         fill="var(--color-accent)"
-        style={{ filter: "drop-shadow(0 0 4px var(--color-accent))" }}
+        style={{ filter: `drop-shadow(0 0 ${compact ? 3 : 4}px var(--color-accent))` }}
       >
         {dotMotion}
       </circle>
