@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { ProjectNode } from "@/lib/fs-types";
 import { AndroidDownloadButton } from "./AndroidDownloadButton";
 import { TypewriterHeading } from "./TypewriterHeading";
+import { FlowDiagram } from "./FlowDiagram";
 import { ThinkingOrb } from "@/components/ui/thinking-orbs";
 import {
   BriefcaseIcon,
@@ -104,6 +105,14 @@ export function ProjectDetail({ project }: { project: ProjectNode }) {
               How It Works
             </h2>
           </div>
+          {project.flowDiagram && (
+            <div className="rounded-lg border border-foreground/10 p-3">
+              <FlowDiagram
+                nodes={project.flowDiagram.nodes}
+                loopFromIndex={project.flowDiagram.loopFromIndex}
+              />
+            </div>
+          )}
           <ol className="flex flex-col gap-2.5">
             {project.howItWorks.map((step, index) => (
               <li

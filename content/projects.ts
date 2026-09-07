@@ -33,6 +33,18 @@ export const projects: ProjectNode[] = [
       "Learned to design a feedback loop so the model keeps improving after deployment, not just at training time.",
       "Integrating a third-party threat-intel API (VirusTotal) meant treating an external service as unreliable by default — timeouts, rate limits, and malformed responses all needed handling.",
     ],
+    // Mirrors howItWorks above, visually — the loop starts over at the
+    // classifier (index 1) since the last step folds feedback back into it.
+    flowDiagram: {
+      nodes: [
+        { icon: "phone", label: "SMS Listener" },
+        { icon: "sparkle", label: "Classifier" },
+        { icon: "shield", label: "VirusTotal Check" },
+        { icon: "target", label: "Risk Score" },
+        { icon: "refresh", label: "Retrain" },
+      ],
+      loopFromIndex: 1,
+    },
     links: {
       github: "https://github.com/toliko-coding/SMSNet0.1",
       demo: "https://www.youtube.com/watch?v=kLN8q_Sf7bY",
@@ -79,6 +91,14 @@ export const projects: ProjectNode[] = [
       "Designing a fair scoring formula across wallets with very different trade volumes was harder than expected — naive PnL ranking rewards one lucky trade over consistent performance.",
       "Keeping it strictly paper-trading was a deliberate choice, to explore the analytics problem without financial risk.",
     ],
+    flowDiagram: {
+      nodes: [
+        { icon: "globe", label: "On-Chain Data" },
+        { icon: "sparkle", label: "Smart Score" },
+        { icon: "cloud", label: "Supabase" },
+        { icon: "target", label: "Paper Trade" },
+      ],
+    },
     links: {
       github: "https://github.com/toliko-coding/WalletRadar_web",
     },
@@ -107,6 +127,14 @@ export const projects: ProjectNode[] = [
       "Validating AI output with Zod before it touches the database was a deliberate boundary: treat model output like any other untrusted input.",
       "Row Level Security pushed authorization down into the database itself, instead of trusting every API call to remember to filter by user.",
     ],
+    flowDiagram: {
+      nodes: [
+        { icon: "phone", label: "Capture Doc" },
+        { icon: "sparkle", label: "OCR / AI Extract" },
+        { icon: "shield", label: "Validate (Zod)" },
+        { icon: "cloud", label: "Private Storage" },
+      ],
+    },
     links: {
       github: "https://github.com/toliko-coding/My-docApp",
     },
@@ -133,6 +161,13 @@ export const projects: ProjectNode[] = [
       "One of my first native Android apps — learned the basics of Activity-based navigation and structuring a multi-screen Java app.",
       "Modeling a medical domain, even a simplified one, showed how important clear data structures are before writing any UI.",
     ],
+    flowDiagram: {
+      nodes: [
+        { icon: "phone", label: "Enter Values" },
+        { icon: "code", label: "Match Ranges" },
+        { icon: "target", label: "Suggestion" },
+      ],
+    },
     links: {
       github: "https://github.com/toliko-coding/Android-App",
     },
@@ -158,6 +193,16 @@ export const projects: ProjectNode[] = [
       "First real exposure to the MVC architectural pattern outside a classroom example — seeing how it forces a separation between data, presentation, and request handling.",
       "Working in .NET/ASP.NET gave me a point of comparison against the JavaScript-based stacks I mostly use now.",
     ],
+    // The classic MVC triangle, drawn out rather than the 2-sentence
+    // summary verbatim — Model/Controller/View is literally what the code
+    // is organized into.
+    flowDiagram: {
+      nodes: [
+        { icon: "folder", label: "Model" },
+        { icon: "code", label: "Controller" },
+        { icon: "globe", label: "View" },
+      ],
+    },
     links: {
       github:
         "https://github.com/toliko-coding/.NET---MVC---CoffeShop-WebApplication-Project",
@@ -184,6 +229,13 @@ export const projects: ProjectNode[] = [
       "My first deployed website — learned the basics of a NoSQL data model (Firebase) instead of the relational databases taught in school.",
       "Building something with real urgency (COVID-19 lockdowns), instead of a toy assignment, made the scope and deadline pressure feel completely different.",
     ],
+    flowDiagram: {
+      nodes: [
+        { icon: "globe", label: "Post Request" },
+        { icon: "cloud", label: "Firebase Store" },
+        { icon: "target", label: "Match Listing" },
+      ],
+    },
     links: {
       github:
         "https://github.com/toliko-coding/NoSQL-FireBase----site-Wepo4U-project",

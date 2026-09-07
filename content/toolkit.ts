@@ -22,6 +22,15 @@ export const toolkit: ProjectNode[] = [
       "First hands-on look at networking below the application layer — raw sockets, not HTTP requests.",
       "Seeing packet contents in plaintext firsthand made the case for encryption (TLS, VPNs) click far more than reading about it ever did.",
     ],
+    // Loops from the start — capture is a continuous process, not a
+    // one-shot pipeline.
+    flowDiagram: {
+      nodes: [
+        { icon: "globe", label: "Client ↔ Server" },
+        { icon: "code", label: "Capture & Parse" },
+      ],
+      loopFromIndex: 0,
+    },
     links: {
       github: "https://github.com/toliko-coding/Sniffer",
     },
@@ -48,6 +57,13 @@ export const toolkit: ProjectNode[] = [
       "Learned why signature/path-based detection is fragile — it only catches threats you already know the exact indicators for.",
       "Simulating both sides of a security case study, the attack scenario and the detector, connected incident-response theory to actual working code.",
     ],
+    flowDiagram: {
+      nodes: [
+        { icon: "file", label: "Known Paths" },
+        { icon: "code", label: "Scan Filesystem" },
+        { icon: "target", label: "Risk Level" },
+      ],
+    },
     links: {
       github: "https://github.com/toliko-coding/Monitar-Malware-Detector",
     },
@@ -76,6 +92,17 @@ export const toolkit: ProjectNode[] = [
       "Documenting the system's own limitations honestly in the README — the SMS step isn't a real zero-knowledge proof, there's no persistence layer — was as valuable as building the crypto itself; knowing what you didn't solve is part of understanding security.",
       "A Twilio credential briefly ended up hardcoded in an early commit before being moved to environment variables — a first-hand lesson that git history remembers everything, so secrets need to start out of the codebase, not get removed later.",
     ],
+    // Loops back to SMS Verify — re-verifying is exactly how a voter
+    // changes their vote, per the README.
+    flowDiagram: {
+      nodes: [
+        { icon: "phone", label: "Register Voter" },
+        { icon: "shield", label: "SMS Verify" },
+        { icon: "lock", label: "Encrypt Ballot" },
+        { icon: "target", label: "Tally" },
+      ],
+      loopFromIndex: 1,
+    },
     links: {
       github:
         "https://github.com/toliko-coding/voting_system_using_ZKP--and--cryptographic_algorithms",
@@ -103,6 +130,16 @@ export const toolkit: ProjectNode[] = [
       "Working through zero-knowledge proofs on a concrete example (Sudoku) made an otherwise abstract concept — proving knowledge without revealing it — actually click.",
       "Splitting the system into separate Generator/Prover/Verifier scripts mirrored how these roles are described in the literature, which made mapping theory to code much easier.",
     ],
+    // Loops back to the commitment step — "many rounds" of challenge and
+    // response is the whole protocol, not a one-off exchange.
+    flowDiagram: {
+      nodes: [
+        { icon: "code", label: "Generate Puzzle" },
+        { icon: "lock", label: "Commit Solution" },
+        { icon: "shield", label: "Verify Challenge" },
+      ],
+      loopFromIndex: 1,
+    },
     links: {
       github:
         "https://github.com/toliko-coding/Advanced-Cryptography_Zero-Knowledge-Proof",
@@ -128,6 +165,12 @@ export const toolkit: ProjectNode[] = [
     learnings: [
       "A first, simple encrypt/decrypt exercise before working with the real primitives (ECC, AES-GCM) used later in the Secure Voting System project.",
     ],
+    flowDiagram: {
+      nodes: [
+        { icon: "code", label: "Input Password" },
+        { icon: "lock", label: "Encrypt & Store" },
+      ],
+    },
     links: {
       github: "https://github.com/toliko-coding/Passwords-Encription-Program",
     },

@@ -30,6 +30,31 @@ export interface ProjectNode extends BaseNode {
   // Concrete takeaways from building it — what changed in how I think or
   // work, not a restatement of what the project does.
   learnings?: string[];
+  // An animated system-flow diagram, generated from the same story as
+  // howItWorks but shown as boxes-and-arrows with a dot tracing the path.
+  // The icon key is resolved to a component in the renderer (same pattern
+  // as PageNode.facts) so content stays free of UI imports. loopFromIndex,
+  // when set, makes the dot cycle endlessly from that node back through to
+  // the end instead of stopping — for a project whose own last step is a
+  // feedback loop back into an earlier stage.
+  flowDiagram?: {
+    nodes: {
+      icon:
+        | "phone"
+        | "sparkle"
+        | "shield"
+        | "target"
+        | "refresh"
+        | "code"
+        | "globe"
+        | "cloud"
+        | "folder"
+        | "file"
+        | "lock";
+      label: string;
+    }[];
+    loopFromIndex?: number;
+  };
   links: {
     github?: string;
     demo?: string;

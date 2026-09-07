@@ -22,6 +22,13 @@ export const programming: ProjectNode[] = [
       "Learned the basic OpenCV pipeline — color space conversion, then edge detection — as a stepping stone before more applied computer-vision work.",
       "Kept the GUI experiment deliberately separate from the image-processing script, an early lesson in not tangling unrelated concerns in one file.",
     ],
+    flowDiagram: {
+      nodes: [
+        { icon: "file", label: "Load Image" },
+        { icon: "code", label: "Edge Detection" },
+        { icon: "target", label: "Display Result" },
+      ],
+    },
     links: {
       github: "https://github.com/toliko-coding/Python_ImageRecognicion",
     },
@@ -45,6 +52,16 @@ export const programming: ProjectNode[] = [
     learnings: [
       "First time implementing a game loop and sprite movement/collisions from scratch instead of using a higher-level game engine.",
     ],
+    // Loops back to the very first step — the whole point of a game loop is
+    // that it cycles indefinitely, frame after frame.
+    flowDiagram: {
+      nodes: [
+        { icon: "code", label: "Poll Input" },
+        { icon: "refresh", label: "Update State" },
+        { icon: "target", label: "Redraw Frame" },
+      ],
+      loopFromIndex: 0,
+    },
     links: {
       github: "https://github.com/toliko-coding/Python-pygame--first-2D-game",
     },
