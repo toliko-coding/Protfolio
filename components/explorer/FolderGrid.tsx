@@ -58,7 +58,7 @@ export function FolderGrid({ nodes, intro }: FolderGridProps) {
           <Link
             key={node.id}
             href={node.path}
-            className={`group flex flex-col gap-2 rounded-lg border border-foreground/10 transition-colors hover:border-accent/50 hover:bg-accent/[.04] hover:shadow-[0_0_16px_-8px_var(--color-accent)] ${
+            className={`group flex h-full flex-col gap-2 rounded-lg border border-foreground/10 transition-colors hover:border-accent/50 hover:bg-accent/[.04] hover:shadow-[0_0_16px_-8px_var(--color-accent)] ${
               isProject(node) ? "p-4" : "p-3"
             }`}
           >
@@ -93,7 +93,7 @@ export function FolderGrid({ nodes, intro }: FolderGridProps) {
               <span className="text-xs text-foreground/45">{node.problem}</span>
             )}
             {isProject(node) && node.flowDiagram && (
-              <div className="mt-1 rounded-md border border-foreground/10 bg-foreground/[.02] p-2">
+              <div className="mt-auto rounded-md border border-foreground/10 bg-foreground/[.02] p-2">
                 <FlowDiagram
                   nodes={node.flowDiagram.nodes}
                   loopFromIndex={node.flowDiagram.loopFromIndex}

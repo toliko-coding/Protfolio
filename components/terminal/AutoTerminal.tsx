@@ -215,7 +215,7 @@ export function AutoTerminal() {
       */}
       <div
         ref={scrollRef}
-        className="min-h-0 flex-1 overflow-auto p-2 whitespace-pre"
+        className="min-h-0 flex-1 overflow-auto overflow-x-hidden p-2 whitespace-pre-wrap break-words"
         style={{ paddingBottom: "calc(var(--system-fetch-space, 33px) + 8px)" }}
       >
         {history.map((line) => (

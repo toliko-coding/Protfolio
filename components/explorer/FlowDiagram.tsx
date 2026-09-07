@@ -47,10 +47,16 @@ const NODE_RADIUS = 20;
 const MARGIN = 56;
 const HOP_SECONDS = 0.9;
 
+// Its own (much smaller) viewBox — reusing the full-size VIEW_WIDTH here
+// scaled everything down by the ratio of a card's actual pixel width to
+// 640, crushing an already-small 7px label font down to 2px on screen.
+// Keeping compact's own coordinate space close to real card widths means
+// these sizes land close to their literal pixel values once rendered.
+const COMPACT_VIEW_WIDTH = 220;
 const COMPACT_VIEW_HEIGHT = 44;
-const COMPACT_TOP_Y = 22;
-const COMPACT_NODE_RADIUS = 12;
-const COMPACT_MARGIN = 20;
+const COMPACT_TOP_Y = 16;
+const COMPACT_NODE_RADIUS = 9;
+const COMPACT_MARGIN = 18;
 
 function straightPath(positions: number[], topY: number, from: number, to: number): string {
   return positions
@@ -80,10 +86,12 @@ export function FlowDiagram({ nodes, loopFromIndex, compact = false }: FlowDiagr
   const topY = compact ? COMPACT_TOP_Y : TOP_Y;
   const nodeRadius = compact ? COMPACT_NODE_RADIUS : NODE_RADIUS;
   const margin = compact ? COMPACT_MARGIN : MARGIN;
-  const iconSize = compact ? 12 : 18;
+  const iconSize = compact ? 10 : 18;
+  const viewWidth = compact ? COMPACT_VIEW_WIDTH : VIEW_WIDTH;
 
-  const step = (VIEW_WIDTH - margin * 2) / (count - 1);
+  const step = (viewWidth - margin * 2) / (count - 1);
   const positions = nodes.map((_, i) => margin + step * i);
+  const labelWidth = Math.min(step * 0.85, 150);
   const hasLoop =
     !compact &&
     typeof loopFromIndex === "number" &&
@@ -96,23 +104,30 @@ export function FlowDiagram({ nodes, loopFromIndex, compact = false }: FlowDiagr
   // "flow-arrow" and silently reusing whichever instance defined it first.
   const arrowId = `flow-arrow-${nodes.map((n) => n.label).join("-").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
+  const introDuration = loopFromIndex! * HOP_SECONDS;
+
   const dotMotion = hasLoop ? (
     <>
       {/* Skipped entirely when the loop target IS the first node (a game
           loop, say) — there's nothing before it to traverse once first. */}
       {loopFromIndex! > 0 && (
         <animateMotion
-          id="flow-intro"
           path={straightPath(positions, topY, 0, loopFromIndex!)}
-          dur={`${loopFromIndex! * HOP_SECONDS}s`}
+          dur={`${introDuration}s`}
           begin="0s"
           fill="freeze"
         />
       )}
+      {/* A fixed begin time rather than a syncbase reference to the intro
+          animation's "end" event — SMIL syncbase timing between two
+          animateMotion elements sharing a target is unreliable across
+          browsers (the second can fail to ever take over from the first's
+          frozen end state), where a plain offset equal to the intro's own
+          known duration always fires on schedule. */}
       <animateMotion
         path={loopPath(positions, loopFromIndex!)}
         dur={`${(count - loopFromIndex!) * HOP_SECONDS}s`}
-        begin={loopFromIndex! > 0 ? "flow-intro.end" : "0s"}
+        begin={`${introDuration}s`}
         repeatCount="indefinite"
       />
     </>
@@ -126,7 +141,7 @@ export function FlowDiagram({ nodes, loopFromIndex, compact = false }: FlowDiagr
 
   return (
     <svg
-      viewBox={`0 0 ${VIEW_WIDTH} ${viewHeight}`}
+      viewBox={`0 0 ${viewWidth} ${viewHeight}`}
       className="h-auto w-full"
       role="img"
       aria-label={`Diagram: ${nodes.map((n) => n.label).join(" → ")}${
@@ -134,8 +149,19 @@ export function FlowDiagram({ nodes, loopFromIndex, compact = false }: FlowDiagr
       }`}
     >
       <defs>
-        <marker id={arrowId} markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-          <path d="M0,0 L8,4 L0,8 Z" fill="var(--color-accent)" fillOpacity="0.5" />
+        <marker
+          id={arrowId}
+          markerWidth={compact ? 5 : 8}
+          markerHeight={compact ? 5 : 8}
+          refX={compact ? 3.5 : 6}
+          refY={compact ? 2.5 : 4}
+          orient="auto"
+        >
+          <path
+            d={compact ? "M0,0 L5,2.5 L0,5 Z" : "M0,0 L8,4 L0,8 Z"}
+            fill="var(--color-accent)"
+            fillOpacity="0.5"
+          />
         </marker>
       </defs>
 
@@ -188,7 +214,24 @@ export function FlowDiagram({ nodes, loopFromIndex, compact = false }: FlowDiagr
             >
               <Icon className="text-accent/80" />
             </svg>
-            {!compact && (
+            {compact ? (
+              <foreignObject
+                x={Math.max(0, Math.min(x - labelWidth / 2, viewWidth - labelWidth))}
+                y={topY + nodeRadius + 3}
+                width={labelWidth}
+                height={12}
+                overflow="hidden"
+              >
+                {/* w-full is load-bearing, not decorative — without an
+                    explicit width the div shrink-wraps to its own text
+                    instead of the foreignObject's box, so `truncate` has
+                    nothing to actually clip against and the full label
+                    bleeds into the next node's space. */}
+                <div className="w-full truncate text-center font-mono text-[7px] leading-[9px] text-foreground/55">
+                  {node.label}
+                </div>
+              </foreignObject>
+            ) : (
               <text
                 x={x}
                 y={topY + nodeRadius + 16}

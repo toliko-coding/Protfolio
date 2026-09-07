@@ -10,6 +10,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { getCompletions, runCommand, type OutputLine } from "@/lib/terminal-commands";
 import { toDisplayPath } from "@/lib/fs-utils";
+import { BOOT_FINISHED_EVENT } from "@/lib/boot-events";
 
 interface HistoryEntry {
   id: number;
@@ -155,6 +156,10 @@ export function Terminal() {
       clearTimeout(timeoutId);
       setTypedCommand("");
       setIsBooting(false);
+      // Tells ExplorerBootGate the Explorer can come online now — fires on
+      // both a natural finish and a click-to-skip, since skipBootRef points
+      // straight at this function.
+      window.dispatchEvent(new Event(BOOT_FINISHED_EVENT));
     };
     skipBootRef.current = finish;
 
