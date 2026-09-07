@@ -12,7 +12,12 @@ const ICONS = {
 } satisfies Record<SkillDomain["icon"], ComponentType<{ className?: string }>>;
 
 // Wide, not circular — the ring is an ellipse so the diagram spreads across
-// the panel's width instead of sitting as a small centered blob.
+// the panel's width instead of sitting as a small centered blob. Nodes stay
+// in fixed positions — an earlier attempt to rotate the whole ring rigidly
+// broke down badly at 90°/270°, since a rotated ellipse needs far more
+// vertical room than this wide, short viewBox has, sending nodes out of
+// bounds. Motion instead comes only from the independent scanning dot below,
+// which is just one point tracing a fixed path — nothing rotates.
 const VIEW_WIDTH = 720;
 const VIEW_HEIGHT = 300;
 const CENTER = { x: VIEW_WIDTH / 2, y: 150 };
@@ -43,7 +48,7 @@ function orbitPath() {
 // A radar map of the broad domains behind the work on this site, rather
 // than a bar chart ranking one against another. Nothing here is counted or
 // scored — the point is breadth, not a scorecard a recruiter could read as
-// "weak at X" from a thin bar. Shown on both root and /projects.
+// "weak at X" from a thin bar.
 export function DomainRadar() {
   const domains = computeSkillDomains(getAllProjects());
   if (domains.length === 0) return null;
