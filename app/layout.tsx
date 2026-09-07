@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/layout/Header";
 import { WorkspaceShell } from "@/components/layout/WorkspaceShell";
 import { StatusWidget } from "@/components/layout/StatusWidget";
@@ -58,6 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
         <StatusWidget />
         <SystemFetch />
+        <Analytics />
       </body>
     </html>
   );
