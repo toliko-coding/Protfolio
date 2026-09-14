@@ -234,15 +234,15 @@ export const projects: ProjectNode[] = [
     type: "project",
     tags: ["software"],
     summary:
-      "Android app where a doctor enters a patient's blood test results and the app determines the likely disease and recommended treatment.",
+      "Android app where a doctor enters a patient's blood test results and the app flags every condition whose ranges match, each with a recommended treatment.",
     role: "Developer",
     problem:
-      "Speeds up first-pass diagnosis by mapping blood test values to likely conditions and treatment suggestions for the reviewing doctor.",
+      "Speeds up first-pass diagnosis by checking blood test values against the ranges for 26 conditions and listing every match, with treatment suggestions, for the reviewing doctor.",
     techStack: ["Java", "Android SDK"],
     howItWorks: [
       "A doctor logs in and enters a patient's blood test values through the app's form screens.",
-      "The app maps those values against known ranges to suggest the most likely condition and treatment.",
-      "Results are shown back to the doctor as a first-pass suggestion, not a final diagnosis.",
+      "Each value is classed as low, normal or high against its reference range, and the app flags every one of 26 hard-coded conditions whose pattern matches — a list of candidates, not a single best guess.",
+      "The matches and their treatment text (in Hebrew) are shown to the doctor as a first-pass suggestion, not a final diagnosis, and saved as a text report in Downloads.",
     ],
     learnings: [
       "One of my first native Android apps — learned the basics of Activity-based navigation and structuring a multi-screen Java app.",
@@ -267,14 +267,15 @@ export const projects: ProjectNode[] = [
     type: "project",
     tags: ["software"],
     summary:
-      ".NET MVC web application for coffee shops to manage their menu, users, and customer orders.",
+      ".NET MVC web application for a coffee shop — menu and user management for staff, and a storefront where customers place orders.",
     role: "Developer",
     problem:
-      "Gives a coffee shop a simple web-based back office: menu management, user accounts, and order placement/tracking.",
-    techStack: [".NET", "ASP.NET MVC", "JavaScript"],
+      "Gives a coffee shop a simple web-based back office for its menu and user accounts, plus a public storefront for customer ordering.",
+    techStack: [".NET Framework", "ASP.NET MVC 5", "Entity Framework 6", "SQL Server", "JavaScript"],
     howItWorks: [
-      "Built on ASP.NET's MVC pattern: Models represent menu items and orders, Views render the storefront and admin pages, Controllers handle requests between them.",
-      "Staff manage the menu and view orders through admin-facing views; customers browse the menu and place orders through the public-facing ones.",
+      "Built on ASP.NET's MVC pattern: Models represent menu items, users and orders, Views render the storefront and admin pages, Controllers handle requests between them.",
+      "Entity Framework 6 maps those models to a SQL Server database, with Admin, Barista and Client roles modeled in the user data.",
+      "Admins manage the menu and user accounts through admin-facing views; customers browse the menu and place orders, with a simulated payment step, through the public-facing ones.",
     ],
     learnings: [
       "First real exposure to the MVC architectural pattern outside a classroom example — seeing how it forces a separation between data, presentation, and request handling.",
@@ -304,13 +305,13 @@ export const projects: ProjectNode[] = [
     tags: ["software"],
     summary:
       "First website project — a NoSQL/Firebase-backed site built during COVID-19 to connect elderly residents needing help with local volunteers and small businesses.",
-    role: "Developer — school project",
+    role: "Developer — team school project (4 software engineering students, SCE)",
     problem:
       "Connects vulnerable residents who needed help during COVID-19 lockdowns with nearby volunteers and small businesses offering support.",
-    techStack: ["Firebase", "HTML", "JavaScript"],
+    techStack: ["Firebase Realtime Database", "Firebase Auth", "Firebase Storage", "HTML", "JavaScript"],
     howItWorks: [
-      "A Firebase/NoSQL backend stores requests for help alongside volunteer and small-business listings.",
-      "Visitors could post a need or an offer to help, and the site surfaced matching listings — a shared board, not a real-time matching engine.",
+      "A Firebase Realtime Database stores requests for help alongside volunteer and small-business listings, with Firebase Auth for accounts.",
+      "Visitors post a need or an offer to help, and the site matches volunteers to requests by region, time slot and type of help.",
     ],
     learnings: [
       "My first deployed website — learned the basics of a NoSQL data model (Firebase) instead of the relational databases taught in school.",
