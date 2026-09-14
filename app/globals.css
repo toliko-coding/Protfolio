@@ -62,3 +62,13 @@ body {
   color: var(--color-accent);
   text-shadow: 0 0 6px color-mix(in srgb, var(--color-accent) 60%, transparent);
 }
+
+/* SMIL animations ignore prefers-reduced-motion on their own, so
+   LiveTopology puts every purely decorative moving part (packets, streaks,
+   rotating rings, the sweep) in a .topology-motion group and this drops them
+   outright — the static map and its status lights stay. */
+@media (prefers-reduced-motion: reduce) {
+  .topology-motion {
+    display: none;
+  }
+}

@@ -15,3 +15,9 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => false,
   }),
 });
+
+// The root page fetches live status feeds on mount, and tests must never
+// reach the real network. By default fetch returns a request that never
+// settles — so nothing updates state after a test has finished — and tests
+// that care about fetched data stub it with vi.stubGlobal.
+globalThis.fetch = (() => new Promise<Response>(() => {})) as typeof fetch;

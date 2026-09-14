@@ -224,3 +224,39 @@ export function LockIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function VercelIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M12 4 21 19H3L12 4Z" />
+    </svg>
+  );
+}
+
+export function BrowserIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M3 9h18M6.5 6.5h.01M9 6.5h.01" />
+    </svg>
+  );
+}
+
+export function DashboardIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <rect x="3" y="3" width="8" height="10" rx="1" />
+      <rect x="13" y="3" width="8" height="6" rx="1" />
+      <rect x="13" y="11" width="8" height="10" rx="1" />
+      <rect x="3" y="15" width="8" height="6" rx="1" />
+    </svg>
+  );
+}
+
+export function PulseIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M3 12h4l2-5 4 10 2-5h6" />
+    </svg>
+  );
+}

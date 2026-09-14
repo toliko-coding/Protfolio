@@ -3,7 +3,7 @@ import { getBreadcrumbTrail } from "@/lib/fs-utils";
 import { isFolder, isPage, isProject, type FSNode, type PageNode } from "@/lib/fs-types";
 import { Breadcrumb } from "./Breadcrumb";
 import { FolderGrid } from "./FolderGrid";
-import { DomainRadar } from "./DomainRadar";
+import { LiveTopology } from "./LiveTopology";
 import { ProjectDetail } from "./ProjectDetail";
 import { PageDetail } from "./PageDetail";
 import { SkillsDetail } from "./SkillsDetail";
@@ -53,7 +53,12 @@ export function Explorer({ node }: { node: FSNode }) {
             <FolderGrid nodes={node.children} intro={node.intro} />
             {node.path === "/" && (
               <div className="px-4 pb-4">
-                <DomainRadar />
+                {/* Read on the server while the root page is statically
+                    generated, so each deploy's HTML carries the exact commit
+                    it was built from. Vercel sets this (system env vars are
+                    exposed for this project); it's undefined in a local
+                    build, which the diagram labels as such. */}
+                <LiveTopology deployedSha={process.env.VERCEL_GIT_COMMIT_SHA} />
               </div>
             )}
           </>

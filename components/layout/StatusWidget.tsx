@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronIcon, RefreshIcon } from "@/components/ui/icons";
+import { fetchStatuspage, GITHUB_STATUS_URL, type Health } from "@/lib/live-status";
 
 // How far above its own bottom-12 offset this widget's box actually
 // reaches, published as a CSS var so other fixed-height gutters (Explorer,
@@ -26,8 +27,6 @@ import { ChevronIcon, RefreshIcon } from "@/components/ui/icons";
 // overlap, not a passive one, which is standard and expected UI behavior.
 const GUTTER_VAR = "--status-widget-space";
 const BOTTOM_OFFSET_PX = 48; // matches this component's own bottom-12
-
-type Health = "operational" | "degraded" | "down" | "checking";
 
 interface StatusRow {
   label: string;
@@ -60,31 +59,11 @@ const REPOS_CHECKING: StatusRow = {
 // something this page can verify live — update it if that count changes.
 const KNOWN_PRIVATE_REPOS = 27;
 
-// Statuspage's v2 summary endpoint is meant for public, unauthenticated
-// embeds like this one — it's the same feed githubstatus.com's own badge uses.
-// Returns null on abort (effect cleanup, fast navigation) so the caller can
-// leave the previous state alone instead of flashing a false "down" status.
-async function checkGithubStatus(signal: AbortSignal): Promise<StatusRow | null> {
-  try {
-    const res = await fetch("https://www.githubstatus.com/api/v2/status.json", {
-      signal,
-    });
-    if (!res.ok) throw new Error("bad response");
-    const data = await res.json();
-    const indicator = data?.status?.indicator as string | undefined;
-    const description =
-      (data?.status?.description as string | undefined) ?? "Reachable";
-    const health: Health =
-      indicator === "none" || indicator === undefined
-        ? "operational"
-        : indicator === "minor"
-          ? "degraded"
-          : "down";
-    return { label: "GitHub API", health, detail: description };
-  } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") return null;
-    return { label: "GitHub API", health: "down", detail: "Unreachable" };
-  }
+// The same feed the root page's topology diagram reads — lib/live-status
+// shares one in-flight request between the two.
+async function checkGithubStatus(): Promise<StatusRow> {
+  const { health, description } = await fetchStatuspage(GITHUB_STATUS_URL);
+  return { label: "GitHub API", health, detail: description };
 }
 
 // Live public repo count from GitHub's own API, paired with the manually
@@ -207,13 +186,20 @@ export function StatusWidget() {
 
   const runCheck = useCallback(() => {
     const controller = new AbortController();
-    checkGithubStatus(controller.signal).then((result) => {
-      if (result) setGithub(result);
+    // The status request is shared (see checkGithubStatus), so it isn't
+    // aborted on cleanup — its late result is just ignored instead, which
+    // equally avoids flashing a false "down" after fast navigation.
+    let active = true;
+    checkGithubStatus().then((result) => {
+      if (active) setGithub(result);
     });
     checkRepoStats(controller.signal).then((result) => {
       if (result) setRepos(result);
     });
-    return () => controller.abort();
+    return () => {
+      active = false;
+      controller.abort();
+    };
   }, []);
 
   useEffect(() => runCheck(), [runCheck]);
