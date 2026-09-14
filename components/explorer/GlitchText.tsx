@@ -4,10 +4,8 @@ import { useEffect, useState } from "react";
 
 // Latin letters/digits, not the full-width katakana Matrix code rain
 // actually uses — those render through a CJK fallback font at roughly
-// double the width of the Latin prose they'd replace, which reflows the
-// paragraph (and everything below it) for the length of the animation.
-// Staying in-script keeps each swapped character close enough in width
-// that line-wrapping never moves.
+// double the width of the Latin prose they'd replace, so even drawn as an
+// overlay (see below) they'd visibly smear across their neighbors.
 const MATRIX_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const STEP_MS = 45;
 const DURATION_MS = 900;
@@ -86,14 +84,36 @@ export function GlitchText({
 
     return () => {
       cancelled = true;
-      clearTimeout(timeoutId);
       clearInterval(intervalId);
+      clearTimeout(timeoutId);
     };
   }, [text]);
 
+  if (!decoding) return <span className={className}>{text}</span>;
+
+  // Swapping the visible characters themselves reflowed the text: in a
+  // proportional font a random glyph is rarely as wide as the letter it
+  // replaces, so a line could gain or lose a wrap mid-animation and shove
+  // everything below it up or down (reported as the root page "jumping").
+  // Instead every real character stays in the flow — made transparent while
+  // it's scrambled — and the random glyph is drawn over it, out of flow.
+  // Line boxes are then built from exactly the same characters as the
+  // resting text, so nothing can move. The real text also stays what
+  // assistive tech reads; the glyphs are aria-hidden.
   return (
-    <span className={`${className ?? ""} ${decoding ? "matrix-decode" : ""}`}>
-      {display}
+    <span className={`${className ?? ""} matrix-decode`}>
+      {text.split("").map((ch, i) =>
+        display[i] === ch ? (
+          ch
+        ) : (
+          <span key={i} className="relative">
+            <span className="text-transparent [text-shadow:none]">{ch}</span>
+            <span aria-hidden="true" className="absolute inset-0 flex justify-center">
+              {display[i]}
+            </span>
+          </span>
+        ),
+      )}
     </span>
   );
 }
