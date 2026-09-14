@@ -77,6 +77,10 @@ export interface PageSection {
   paragraphs?: string[];
   items?: string[];
   image?: { src: string; alt: string; width: number; height: number };
+  // Rendered as a terminal-style "prompt file" card, each line shown as
+  // <tag> text </tag> — About's AI & prompt engineering section uses it to
+  // show how a prompt is structured rather than just listing the skill.
+  prompt?: { title: string; lines: { tag: string; text: string }[] };
 }
 
 export interface PageNode extends BaseNode {
@@ -88,7 +92,7 @@ export interface PageNode extends BaseNode {
   // Optional quick-fact chips shown under the heading (About uses this today).
   // The icon key is resolved to a component in the renderer, keeping content
   // files free of UI imports.
-  facts?: { icon: "location" | "education" | "service"; label: string }[];
+  facts?: { icon: "location" | "education" | "service" | "ai"; label: string }[];
 }
 
 export type FSNode = FolderNode | ProjectNode | PageNode;

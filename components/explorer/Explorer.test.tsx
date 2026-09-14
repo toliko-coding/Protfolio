@@ -138,4 +138,28 @@ describe("Explorer", () => {
       screen.getByRole("img", { name: "Dashboard concept" }),
     ).toBeInTheDocument();
   });
+
+  it("renders a prompt section as a prompt-file card with its tagged lines", () => {
+    const promptPage: PageNode = {
+      ...page,
+      sections: [
+        {
+          heading: "AI & Prompt Engineering",
+          prompt: {
+            title: "how-i-prompt.md",
+            lines: [{ tag: "role", text: "A senior engineer on this codebase." }],
+          },
+        },
+      ],
+    };
+    render(<Explorer node={promptPage} />);
+    expect(
+      screen.getByRole("heading", { name: "AI & Prompt Engineering" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("how-i-prompt.md")).toBeInTheDocument();
+    expect(screen.getByText("role")).toBeInTheDocument();
+    expect(
+      screen.getByText("A senior engineer on this codebase."),
+    ).toBeInTheDocument();
+  });
 });
