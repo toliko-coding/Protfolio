@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllPaths, pathToSegments, resolvePath } from "@/lib/fs-utils";
 import { isFolder, isPage, isProject } from "@/lib/fs-types";
@@ -18,15 +18,21 @@ function resolveCurrentNode(path?: string[]) {
   return resolvePath(currentPath);
 }
 
-export async function generateMetadata({
-  params,
-}: ExplorerPageProps): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: ExplorerPageProps,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const { path } = await params;
   const node = resolveCurrentNode(path);
 
   if (!node) {
     return { title: "Not Found" };
   }
+
+  // Metadata merges shallowly, so returning an `openGraph` object replaces
+  // the parent's entirely — including the share image from
+  // app/opengraph-image.tsx. Carry the parent's images forward explicitly.
+  const images = (await parent).openGraph?.images ?? [];
 
   // Root bypasses the layout's title template — it already has the full
   // "name — tagline" form, not "name — Site Name".
@@ -36,7 +42,7 @@ export async function generateMetadata({
     return {
       title: { absolute: title },
       description,
-      openGraph: { title, description, type: "website" },
+      openGraph: { title, description, type: "website", images },
     };
   }
 
@@ -53,6 +59,7 @@ export async function generateMetadata({
       title: `${node.name} — ${siteProfile.name}`,
       description,
       type: "website",
+      images,
     },
   };
 }

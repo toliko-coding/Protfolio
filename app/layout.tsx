@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/layout/Header";
 import { WorkspaceShell } from "@/components/layout/WorkspaceShell";
 import { StatusWidget } from "@/components/layout/StatusWidget";
@@ -8,6 +9,7 @@ import { Terminal } from "@/components/terminal/Terminal";
 import { AutoTerminal } from "@/components/terminal/AutoTerminal";
 import { SystemFetch } from "@/components/explorer/SystemFetch";
 import { siteProfile } from "@/content/profile";
+import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,11 +23,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // Social crawlers need absolute URLs — this turns app/opengraph-image's
+  // relative path into https://tk-coding.com/opengraph-image in production.
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${siteProfile.name} — ${siteProfile.tagline}`,
     template: `%s — ${siteProfile.name}`,
   },
   description: siteProfile.tagline,
+  // Pages don't set `twitter`, so this survives the shallow metadata merge
+  // and every page gets the large preview card.
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -58,6 +66,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
         <StatusWidget />
         <SystemFetch />
+        <Analytics />
       </body>
     </html>
   );
