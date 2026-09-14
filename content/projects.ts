@@ -10,8 +10,8 @@ export const projects: ProjectNode[] = [
     tags: ["software", "security"],
     difficulty: "high",
     summary:
-      "Real-time monitoring and control plane for locally running Claude Code agents — a Go and Vue dashboard that discovers agents by scanning processes, streams tokens, cost and status over SSE, and drives a multi-stage task pipeline in isolated git worktrees. I contribute to it as an open-source collaborator, not as its author.",
-    role: "Open-source contributor — 24 commits (+5,900 lines across 86 files) to lx-wnk/Agent-Dashboard",
+      "Real-time monitoring and control plane for locally running Claude Code agents — a Go and Vue dashboard that discovers agents by scanning processes, streams tokens, cost and status over SSE, and drives a multi-stage task pipeline in isolated git worktrees. I'm not its author — my work extends it in my own fork.",
+    role: "Open-source contributor — 24 commits (+5,900 lines across 86 files) in my fork of lx-wnk/Agent-Dashboard, not yet merged upstream",
     problem:
       "Running several agents at once leaves you with no shared view of what they are doing, what they cost, or which one is waiting on an answer. The upstream project solves that by reading what Claude Code already writes to disk, with no per-project hooks. My work went into the surfaces that make it legible: the workspace an agent is inspected in, the machine context around it, and a set of performance and correctness faults underneath both.",
     techStack: [
@@ -122,10 +122,10 @@ export const projects: ProjectNode[] = [
     type: "project",
     tags: ["software"],
     summary:
-      "Solana wallet-intelligence and paper-trading research platform — ranks wallets by a composite Smart Score, surfaces tokens that multiple strong wallets converged on, and simulates strategies against live prices. Research only: no wallet signing, no on-chain transactions, no real trades ever placed.",
+      "Solana wallet-intelligence and paper-trading research platform — ranks wallets by a composite Smart Score, surfaces tokens that multiple strong wallets converged on, simulates strategies against live prices, and measures whether those signals actually predicted price. Research only: no wallet signing, no on-chain transactions, no real trades ever placed.",
     role: "Developer",
     problem:
-      "Gives researchers a way to find consistently strong Solana traders and test strategies against them without financial risk — the analysis, the convergence signals, and the trading simulator all run on real market data while staying entirely virtual.",
+      "Gives researchers a way to find consistently strong Solana traders and test strategies against them without financial risk — the analysis, the convergence signals, and the trading simulator all run on real market data while staying entirely virtual, and a separate validation view checks whether the signals hold up at all, independent of whether any one strategy happened to make money.",
     techStack: [
       "Next.js",
       "TypeScript",
@@ -143,12 +143,15 @@ export const projects: ProjectNode[] = [
       "Scored wallets land on a leaderboard with URL-driven filter presets, each linking to a detail page for score breakdown, open positions, classified trades, and Smart Score history — served from cached Supabase data so browsing never burns API quota.",
       "Smart Money convergence flags tokens that several tracked, non-bot wallets bought inside a rolling time window.",
       "The Demo simulator turns those signals into paper trades — simulated fills at current market price with unfavorable slippage and fees — tracked as an equity curve against a SOL benchmark.",
+      "Signal Validation records each convergence event once and resolves its price return at 5m, 15m, 1h, 4h and 24h from WalletRadar's own detection time, keeping why each strategy traded or skipped it as a separate question from whether the signal worked.",
+      "A local automation runner, outside the Next.js process and restricted to loopback, keeps strategy ticks, wallet discovery and candidate analysis going unattended — ticks and heartbeat on independent loops, discovery and analysis serialized by priority under a daily budget.",
     ],
     learnings: [
       "Reconciling two different blockchain data providers (Helius, Birdeye) meant normalizing inconsistent data shapes and rate limits into one coherent model.",
       "Designing a fair scoring formula across wallets with very different trade volumes was harder than expected — naive PnL ranking rewards one lucky trade over consistent performance.",
       "A paper-trading simulator is only worth anything if it refuses to flatter itself: entering at the current price rather than the source wallet's historical one, and charging slippage and fees, is the difference between a believable backtest and a fantasy.",
       "Treating data honesty as a feature — reliability tags on every derived figure, cached reads by default, and no fabricated values — made the numbers trustworthy enough to actually act on.",
+      "Measuring a signal honestly needs rules that resist optimism: a horizon's outcome prefers the first price observed at or after its target time, never a closer earlier one, and an early approximation is tracked but kept out of the headline win rate.",
     ],
     flowDiagram: {
       nodes: [
@@ -157,6 +160,7 @@ export const projects: ProjectNode[] = [
         { icon: "cloud", label: "Supabase Cache" },
         { icon: "target", label: "Convergence" },
         { icon: "refresh", label: "Paper Trades" },
+        { icon: "shield", label: "Signal Validation" },
       ],
     },
     links: {
@@ -180,7 +184,7 @@ export const projects: ProjectNode[] = [
     type: "project",
     tags: ["software"],
     summary:
-      "Mobile app (iOS + Android) that centralizes household bills and receipts — scan a document, let AI extract the details, review, and track from one dashboard. In active development.",
+      "Mobile app (iOS + Android) that centralizes household bills and receipts — scan a document, let AI extract the details, review, and track from one dashboard. Now named Tiyuk, with all eight planned build phases done and EAS build configuration in place.",
     role: "Developer",
     problem:
       "Replaces scattered paper bills and receipts with a single organized, searchable digital system, using a provider-agnostic OCR/AI interface so no vendor is hardcoded.",
@@ -188,29 +192,34 @@ export const projects: ProjectNode[] = [
       "React Native (Expo)",
       "TypeScript",
       "Supabase",
+      "Supabase Edge Functions",
       "Zod",
       "Expo Router",
       "Claude (Anthropic API)",
       "React Query",
+      "Jest",
     ],
     howItWorks: [
       "A document is captured via camera, gallery, or PDF picker and uploaded to a private Supabase Storage bucket, hashed with SHA-256 to catch duplicates.",
-      "A provider-agnostic DocumentProcessor interface hands the file to Claude, via the Anthropic API, to extract bill details — swapping AI vendors later wouldn't touch the rest of the app.",
-      "Zod schemas validate the AI's structured output before anything reaches the database — untrusted model output never gets written to Postgres directly.",
+      "A provider-agnostic DocumentProcessor interface calls a Supabase Edge Function that reads the private file and sends it to Claude for OCR and structured extraction — the API key lives only in that function, never in the app, and swapping AI vendors later wouldn't touch the rest of the app.",
+      "Zod validates the returned JSON before the app uses it, then a review screen flags low-confidence fields for the user to correct and pre-fills the bill form — untrusted model output never gets written to Postgres directly.",
+      "During review, the document is matched against existing bills by provider, amount and billing period, offering to mark an existing bill paid instead of creating a duplicate.",
       "Supabase Row Level Security scopes every query to the signed-in user, so bills and documents are private by construction, not just by app logic.",
     ],
     learnings: [
-      "Building the OCR/AI integration behind a provider-agnostic interface first — starting with an honest mock — made it straightforward to wire in Claude via the Anthropic API later without touching the review flow, storage, or UI.",
+      "Building the OCR/AI integration behind a provider-agnostic interface first — starting with an honest mock — made it straightforward to wire in Claude through a server-side Edge Function later without touching the review flow, storage, or UI.",
       "Validating AI output with Zod before it touches the database was a deliberate boundary: treat model output like any other untrusted input.",
       "Row Level Security pushed authorization down into the database itself, instead of trusting every API call to remember to filter by user.",
       "Supporting Hebrew alongside English meant designing the UI for RTL layout from the start, not retrofitting it after building everything left-to-right first.",
+      "A try/catch around a dynamic import doesn't catch a throw from the module's own init code — expo-notifications still crashed in Expo Go on Android until the app checked the runtime before importing it at all.",
     ],
     flowDiagram: {
       nodes: [
         { icon: "phone", label: "Capture Doc" },
+        { icon: "cloud", label: "Private Storage" },
         { icon: "sparkle", label: "OCR / AI Extract" },
         { icon: "shield", label: "Validate (Zod)" },
-        { icon: "cloud", label: "Private Storage" },
+        { icon: "target", label: "Review & Confirm" },
       ],
     },
     links: {
